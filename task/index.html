@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX/PHP/CURL/JSON example test</title>
+    <link rel="stylesheet" href="libs/css/styles.css">
+</head>
+<body>
+    <table >
+        <thead>
+            <tr>
+                <td>API</td>
+                <td>API description </td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Nearby Place Name</td>
+                <td>
+                    <p id="tabledescriptions"></p>
+                        <p>Finds nearby name based on longitude and latitude</p>
+                        <label>Enter the Longitude: </label>
+                        <input type="text" id="long" name="longitude">
+                        <label>Enter the Latitude: </label>
+                        <input type="text" id="lat" name="latitude">
+                </td>
+                <td><button id="placeNameBtn" type="submit"> Submit</button></td>
+            </tr>
+            <tr>
+                <td> Wiki search </td>
+                <td>
+                    <p><label>Top wikipedia results for place</label>
+                            <input type="text" id="placename">
+                        
+                </td>
+                <td> <button id="wikiBtn" type="submit"> Submit</td>
+            </tr>
+            <tr>
+                <td>Weather</td>
+                <td>
+                    <p id="tabledescriptions"></p>
+                        <p>Finds local weather based on longitude and latitude</p>
+                        <label>Enter the Longitude: </label>
+                        <input type="text" id="long1" name="longitude">
+                        <label>Enter the Latitude: </label>
+                        <input type="text" id="lat1" name="latitude">
+                </td>
+                <td><button id="weatherBtn" type="submit"> Submit</button></td>
+            </tr>
+            <tr>
+        </tbody>
+    </table>
+    <div class="placenameBox">
+        <h2>Country name</h2>
+        <h3 id="countryName"></h3>
+        <h2>Place Name</h2>
+        <h3 id="toponym"> </h3>
+        
+    </div>
+
+    <div class="wikiBox">
+        <h2>Place Name</h2>
+        <h3 id="placenameEntered"></h3>
+        <h2> Summary</h2>
+        <h3 id=summary></h3>
+        <h3><a id="wikiUrl" href="">Click for wikipedia link</a></h3>
+    </div>
+
+    <div class="weatherBox">
+        <h2>Name of station</h2>
+        <h3 id="nameOfStation"></h3>
+        <h2>Temperature</h2>
+        <h3 id="currentTemp"></h3>
+        <h2>Cloud coverage</h2>
+        <h3 id="cloudCoverage"></h3>
+    </div>
+		<script type="application/javascript" src="libs/js/jquery-2.2.3.min.js"></script>
+		<script type="application/javascript" src="libs/js/script.js"></script>
+    </body>
+</html>
