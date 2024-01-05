@@ -1,0 +1,25 @@
+#map {
+    width: auto;
+    height: calc(100vh - 50px);
+  }
+  .modal-left {
+    z-index: 1050; /* Ensure the modal is on top */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%; /* Adjust the width as needed */
+    height: 100vh;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    padding: 50px;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff; /* White background for the modal */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+body .modal-dialog { margin-left: 20 }
