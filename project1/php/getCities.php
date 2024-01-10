@@ -1,5 +1,5 @@
 <?php
-$url = "http://api.geonames.org/searchJSON?country=" .$_REQUEST['countryCode']. "&cities=cities15000&username=dnewell97&maxRows=15";
+$url = "http://api.geonames.org/searchJSON?country=" .$_REQUEST['countryCode']. "&cities=cities15000&username=dnewell97&maxRows=30";
 
 $executionStartTime = microtime(true);
 
