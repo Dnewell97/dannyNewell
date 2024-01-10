@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+      <link rel="stylesheet" href="css/bootstrap.min.css">
+      <link rel="stylesheet" href="css/leaflet.css">
+      <link rel="stylesheet" href="css/easy-button.css">
+      <link rel="stylesheet" href="css/leaflet.extra-markers.min.css">
+      <link rel="stylesheet" href="css/MarkerCluster.css">
+      <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+      <link rel="stylesheet" href="css/styles.css">
+   </head>
+   <body>
+    <!-- Navbar with select option -->
+      <div id="loader"></div>
+      <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-dark text-white">
+         <div class="container-fluid">
+            <a class="navbar-brand">
+            <img src="css/images/planet.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+            <span id="appName">Gazetteer</span>
+            <select name="countries" id="selectCountries" class="form-control scrollable-menu w-auto">
+            </select>
+            </a>
+         </div>
+    <!-- country Modal -->
+      </nav>
+      <div class="modal fade" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+               <div class="modal-header bg-dark text-white">
+                  <h5 class="modal-title" id="countryModalLabel">Country Information</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="$('#countryModal').modal('hide');"></button>
+               </div>
+               <div class="modal-body bg-dark text-white">
+                  <table class="table table-borderless text-white">
+                     <tbody>
+                        <tr>
+                           <th scope="row" class="text-start"></i></th>
+                           <td class="text-center text-nowrap">Country Name:</td>
+                           <td id="countryName" class="text-end"></td>
+                        </tr>
+                        <tr>
+                           <th scope="row" class="text-start"></th>
+                           <td class="text-center">Capital City:</td>
+                           <td id="capitalCity" class="text-end"></td>
+                        </tr>
+                        <tr>
+                           <th scope="row" class="text-start"></th>
+                           <td class="text-center">Timezone:</td>
+                           <td id="countryTimezone" class="text-end"></td>
+                        </tr>
+                        <tr>
+                           <th scope="row" class="text-start"></i></th>
+                           <td class="text-center">Population:</td>
+                           <td id="countryPopulation" class="text-end"></td>
+                        </tr>
+                        <tr>
+                           <th scope="row" class="text-start"></th>
+                           <td class="text-center">Currency:</td>
+                           <td id="countryCurrency" class="text-end"></td>
+                        </tr>
+                        <tr>
+                           <th scope="row" class="text-start"></th>
+                           <td class="text-center">Languages Spoken:</td>
+                           <td id="countryLanguages" class="text-end"></td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Sports Data Modal -->
+      <div class="modal fade" id="sportsDataModal" tabindex="-1" role="dialog" aria-labelledby="sportsDataModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+               <div class="modal-header bg-dark text-white">
+                  <h5 class="modal-title" id="sportsDataModalLabel">Sports Team Data</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="$('#sportsDataModal').modal('hide');"></button>
+               </div>
+               <div class="modal-body bg-dark text-white">
+                  <div class="text-center">
+                     <img id="teamStadiumThumb" src="" alt="Stadium Thumbnail" class="img-fluid" style="max-width: 200px;">
+                  </div>
+                  <table class="table table-striped mt-3 text-white">
+                     <tbody>
+                        <tr class="text-white">
+                           <th class="text-white">Team</th>
+                           <td id="teamName" class="text-white"></td>
+                        </tr>
+                        <tr class="text-white">
+                           <th>Formed Year</th>
+                           <td id="teamFormedYear" class="text-white"></td>
+                        </tr>
+                        <tr class="text-white">
+                           <th class="text-white">Stadium</th>
+                           <td id="teamStadium" class="text-white"></td>
+                        </tr>
+                        <tr class="text-white">
+                           <th>Keywords</th>
+                           <td id="teamKeywords" class="text-white"></td>
+                        </tr>
+                        <tr class="text-white">
+                           <th>Description</th>
+                           <td id="teamDescription" class="text-white"></td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- wiki modal -->
+      <div id="wikiModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="wikiModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+               <div class="modal-header bg-dark text-white">
+                  <h4 class="modal-title bg-dark text" id="wikiModalTitle"></h4>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="$('#wikiModal').modal('hide');"></button>
+               </div>
+               <div class="modal-body bg-dark text-light" id="tableBody">
+                  <div class="text-center">
+                     <img id="wikiThumbnail" src="" alt="Thumbnail" class="img-fluid" style="max-width: 200px;">
+                  </div>
+                  <p id="wikiSummary" class="mt-3"></p>
+                  <a id="wikiLink" href="" target="_blank">Read more on Wikipedia</a>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Currency Data Modal -->
+      <div class="modal fade" id="currencyDataModal" tabindex="-1" role="dialog" aria-labelledby="currencyDataModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+               <div class="modal-header bg-dark text-white">
+                  <h5 class="modal-title" id="currencyDataModalLabel">Currency Information</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="$('#currencyDataModal').modal('hide');"></button>
+               </div>
+               <div class="modal-body bg-dark text-white">
+                  <div class="mb-3">
+                     <label for="baseCurrencySelect" class="form-label">Base Currency:</label>
+                     <select id="baseCurrencySelect" class="form-select"></select>
+                  </div>
+                  <div class="mb-3">
+                     <label for="targetCurrencySelect" class="form-label">Target Currency:</label>
+                     <select id="targetCurrencySelect" class="form-select"></select>
+                  </div>
+                  <button id="convertCurrency" class="btn btn-primary">Convert</button>
+                  <hr>
+                  <div id="conversionResult"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- weather modal -->
+      <div id="weatherModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="weatherModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-dark text-white">
+               <div class="modal-header bg-dark text-white">
+                  <h4 class="modal-title" id="weatherModalTitle"></h4>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="$('#weatherModal').modal('hide');"></button>
+               </div>
+               <div class="modal-body bg-dark text-white">
+                  <div class="text-center mb-3">
+                     <p class="h2 mb-1" id="wrapper-name"></p>
+                     <p class="mb-1" id="wrapper-description"></p>
+                     <p class="display-1 mb-1" id="wrapper-temp"></p>
+                     <span>Pressure: <span id="wrapper-pressure"></span></span>
+                     <span class="mx-2">|</span>
+                     <span>Humidity: <span id="wrapper-humidity"></span></span>
+                  </div>
+                  <!-- Daily forecast -->
+                  <div class="px-5">
+                     <div class="row align-items-center">
+                        <strong>Today</strong>
+                        <div class="col">
+                           <img id="wrapper-icon-today" src="" class="w-10" alt="" />
+                        </div>
+                        <div class="col text-end">
+                           <span id="wrapper-forecast-temp-today"></span>
+                        </div>
+                     </div>
+                     <div class="row align-items-center">
+                        <strong>Tomorrow</strong>
+                        <div class="col">
+                           <img id="wrapper-icon-tomorrow" src="" class="w-10" alt="" />
+                        </div>
+                        <div class="col text-end">
+                           <span id="wrapper-forecast-temp-tomorrow"></span>
+                        </div>
+                     </div>
+                     <div class="row align-items-center">
+                        <strong>Day after tomorrow</strong>
+                        <div class="col">
+                           <img id="wrapper-icon-dAT" src="" class="w-10" alt="" />
+                        </div>
+                        <div class="col text-end">
+                           <span id="wrapper-forecast-temp-dAT"></span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="map"></div>
+      <script src="js/font-awesome.js" crossorigin="anonymous"></script>
+      <script src="js/jquery-2.2.3.min.js"></script>
+      <script src="js/bootstrap.bundle.min.js"></script>
+      <script src="js/leaflet.js"></script>
+      <script src="js/leaflet.extra-markers.min.js"></script>
+      <script src="js/leaflet.markercluster.js"></script>
+      <script src="js/easy-button.js"></script>
+      <script src="js/script.js"></script>
+   </body>
+</html>
