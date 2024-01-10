@@ -67,12 +67,16 @@ $(document).ready(function() {
     
 
     // Function to remove existing borders
-    const removeBorders = () => {
+    const removeBordersAndMarkers = () => {
+        // Remove GeoJSON layers (borders)
         map.eachLayer((layer) => {
             if (layer instanceof L.GeoJSON) {
                 map.removeLayer(layer);
             }
         });
+    
+        // Clear markers from the markers layer group
+        markers.clearLayers();
     };
 
     // Function to fetch and populate select field with countries
@@ -114,7 +118,7 @@ $(document).ready(function() {
 
     // Function to get and display country border
     const getCountryBorder = (countryCode) => {
-        removeBorders();  // Clear existing borders
+        removeBordersAndMarkers();  // Clear existing borders
 
         $.ajax({
             url: "php/getCountryBorder.php",
