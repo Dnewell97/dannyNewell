@@ -15,17 +15,23 @@ $(document).ready(function() {
         maxZoom: 16,
         attribution: "© OpenStreetMap"
     }).addTo(map);
+    map.eachLayer(function (layer) {
+        if (layer instanceof L.markerClusterGroup) {
+            map.removeLayer(layer)
+        }
+    })
 
-    var markers = L.layerGroup();
+    const markers = L.markerClusterGroup();
+    
 
-       var cityIcon = L.ExtraMarkers.icon({
+       const cityIcon = L.ExtraMarkers.icon({
         icon: 'fa-building',
         markerColor: 'blue',
         shape: 'circle',
         prefix: 'fa'
     });
     
-    var weatherIcon = L.ExtraMarkers.icon({
+    const weatherIcon = L.ExtraMarkers.icon({
         icon: 'fa-cloud',
         markerColor: 'cyan',
         shape: 'circle',
@@ -70,7 +76,7 @@ $(document).ready(function() {
         });
     
         // Clear markers from the markers layer group
-        markers.clearLayers();
+        // markers.clearLayers();
     };
 
     // Function to fetch and populate select field with countries
@@ -137,42 +143,34 @@ $(document).ready(function() {
         });
 
         const getCities = (countryCode) => {
-            return $.ajax({
-                url: "php/getCities.php", 
-                type: "GET", 
-                dataType: "json", 
-                data: { countryCode }
-            });
-        }
-        
-            getCities(countryCode).done((result) => {
-                if (result.data && Array.isArray(result.data)) {
-                    let cities = result.data;
-                    cities.forEach(element => {
-                        // Check if latitude and longitude are defined
-                        if (element.lat && element.lng) {
-                            let cityMarker = L.marker([element.lat, element.lng],{icon: cityIcon});
-            
-                            // Creating a popup with city name and description
-                            let popupContent = `<strong>${element.name}</strong><br>`;
-                            popupContent += `Admin Name: ${element.adminName1}<br>`;
-                            popupContent += `Country: ${element.countryName}<br>`;
-                            popupContent += `Population: ${element.population.toLocaleString()}`;
-            
-                            cityMarker.bindPopup(popupContent);
-                            markers.addLayer(cityMarker);
-                        }
-                    });
-            
-                    map.addLayer(markers);
-                } else {
-                    console.error('No cities data available or invalid data structure');
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error('Error fetching cities:', textStatus, errorThrown);
-            });
-            
-        
+    return $.ajax({
+        url: "php/getCities.php", 
+        type: "GET", 
+        dataType: "json", 
+        data: { countryCode }
+    });
+};
+
+getCities(countryCode).done((result) => { 
+    if (result.data && Array.isArray(result.data)) {
+        result.data.forEach(element => {
+            if (element.lat && element.lng) {
+                let cityMarker = L.marker([element.lat, element.lng], {icon: cityIcon});
+                let popupContent = `<strong>${element.name}</strong><br>`;
+                popupContent += `${element.adminName1}<br>`;
+                popupContent += `${element.countryName}<br>`;
+                popupContent += `Population: ${element.population.toLocaleString()}`;
+                cityMarker.bindPopup(popupContent);
+                markers.addLayer(cityMarker); // Add to the marker cluster group
+            }
+        });
+        map.addLayer(markers); // Add the cluster group to the map
+    } else {
+        console.error('No cities data available or invalid data structure');
+    }
+}).fail(function(jqXHR, textStatus, errorThrown) {
+    console.error('Error fetching cities:', textStatus, errorThrown);
+});
     }
 
 
@@ -330,36 +328,34 @@ $(document).ready(function() {
             }
         });
     };
-        const populateCurrencyDropdowns = () => {
-    return $.ajax({
-        url: "php/getCurrency.php",
-        type: "GET",
-        dataType: "json",
-        success: function(result) {
-            if (result && Array.isArray(result)) {
-                var baseCurrencySelect = $("#baseCurrencySelect");
-                var targetCurrencySelect = $("#targetCurrencySelect");
-                result.forEach(currency => {
-                    baseCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
-                    targetCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
-                });
-
-                // Set default base currency to USD
-                baseCurrencySelect.val("USD");
-            } else {
-                console.error("Invalid or empty data");
+      const populateCurrencyDropdowns = () => {
+        return $.ajax({
+            url: "php/getCurrency.php",
+            type: "GET",
+            dataType: "json",
+            success: function(result) {
+                if (result && Array.isArray(result)) {
+                    var baseCurrencySelect = $("#baseCurrencySelect").val("USD");
+                    var targetCurrencySelect = $("#targetCurrencySelect");
+                    result.forEach(currency => {
+                        baseCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
+                        targetCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
+                    });
+                } else {
+                    console.error("Invalid or empty data");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching currency data:", error);
             }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error fetching currency data:", error);
-        }
-    });
-};
-populateCurrencyDropdowns();
+        });
+    };
+    populateCurrencyDropdowns();
 
     $('#convertCurrency').click(function() {
         var baseCurrency = $('#baseCurrencySelect').val();
         var targetCurrency = $('#targetCurrencySelect').val();
+        var amountToConvert = $('#amountToConvert').val();
     
         $.ajax({
             url: 'php/getExchangeRate.php',
@@ -367,10 +363,9 @@ populateCurrencyDropdowns();
             data: {
                 from: baseCurrency,
                 to: targetCurrency,
-                amount: 1 // Assuming the amount is always 1
+                amount: amountToConvert
             },
             success: function(response) {
-                // Parse the response if it's not already an object
                 if (typeof response === "string") {
                     try {
                         response = JSON.parse(response);
@@ -383,7 +378,7 @@ populateCurrencyDropdowns();
     
                 if (response.success) {
                     var convertedAmount = response.result.convertedAmount;
-                    $('#conversionResult').html(`1 ${baseCurrency} = ${convertedAmount} ${targetCurrency}`);
+                    $('#conversionResult').html(`${amountToConvert} ${baseCurrency} = ${convertedAmount} ${targetCurrency}`);
                 } else {
                     console.error('Conversion failed or invalid data');
                     $('#conversionResult').html('Conversion failed or invalid data');
@@ -395,7 +390,6 @@ populateCurrencyDropdowns();
             }
         });
     });
-    
     // getCountryData Function
 const getCountryData = (chosenValue) => {
     $.ajax({
@@ -477,25 +471,17 @@ const getNearbyWeatherStation = (lat, lon) => {
         url: "php/findWeatherStation.php",
         type: "POST", 
         dataType: "json",
-        data: {
-            lat: lat,
-            lon: lon
-        },
+        data: { lat: lat, lon: lon },
         success: function(response) {
             if (response && response.data) {
                 let weatherData = response.data;
-
-                // Check if latitude and longitude are defined
                 if (weatherData.lat && weatherData.lng) {
                     let weatherMarker = L.marker([weatherData.lat, weatherData.lng], {icon: weatherIcon});
-
-                    // Creating a popup with weather station details
                     let popupContent = `<strong>${weatherData.stationName}</strong><br>`;
                     popupContent += `Temperature: ${weatherData.temperature}°C<br>`;
                     popupContent += `Clouds: ${weatherData.clouds}<br>`;
-
                     weatherMarker.bindPopup(popupContent);
-                    markers.addLayer(weatherMarker);
+                    markers.addLayer(weatherMarker); // Add to the marker cluster group
                 }
             } else {
                 console.error('No weather data available');
@@ -563,3 +549,4 @@ const setCurrentWeatherData = (result) => {
         getCountryByCoord(lat, lng);
     });
 });
+
