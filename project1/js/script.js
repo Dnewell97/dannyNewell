@@ -18,24 +18,18 @@ $(document).ready(function() {
 
     var markers = L.layerGroup();
 
-    var cityIcon = L.icon({
-        iconUrl: 'css/images/city.png',
-        iconSize: [30, 80],
-        iconAnchor: [22, 94],
-        popupAnchor: [-3, -76],
-        shadowUrl: 'css/images/markers_shadow.png',
-        shadowSize: [68, 95],
-        shadowAnchor: [22, 94]
+       var cityIcon = L.ExtraMarkers.icon({
+        icon: 'fa-building',
+        markerColor: 'blue',
+        shape: 'circle',
+        prefix: 'fa'
     });
-
-    var weatherIcon = L.icon({
-        iconUrl: 'css/images/weather.png',
-        iconSize: [30, 80],
-        iconAnchor: [22, 94],
-        popupAnchor: [-3, -76],
-        shadowUrl: 'css/images/markers_shadow.png',
-        shadowSize: [68, 95],
-        shadowAnchor: [22, 94]
+    
+    var weatherIcon = L.ExtraMarkers.icon({
+        icon: 'fa-cloud',
+        markerColor: 'cyan',
+        shape: 'circle',
+        prefix: 'fa'
     });
 
     L.easyButton('<i class="fa fa-info fa-xl" aria-hidden="true"></i>', function () {
@@ -336,29 +330,32 @@ $(document).ready(function() {
             }
         });
     };
-    const populateCurrencyDropdowns = () => {
-        return $.ajax({
-            url: "php/getCurrency.php",
-            type: "GET",
-            dataType: "json",
-            success: function(result) {
-                if (result && Array.isArray(result)) {
-                    var baseCurrencySelect = $("#baseCurrencySelect");
-                    var targetCurrencySelect = $("#targetCurrencySelect");
-                    result.forEach(currency => {
-                        baseCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
-                        targetCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
-                    });
-                } else {
-                    console.error("Invalid or empty data");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error fetching currency data:", error);
+        const populateCurrencyDropdowns = () => {
+    return $.ajax({
+        url: "php/getCurrency.php",
+        type: "GET",
+        dataType: "json",
+        success: function(result) {
+            if (result && Array.isArray(result)) {
+                var baseCurrencySelect = $("#baseCurrencySelect");
+                var targetCurrencySelect = $("#targetCurrencySelect");
+                result.forEach(currency => {
+                    baseCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
+                    targetCurrencySelect.append($("<option></option>").text(currency.name).attr("value", currency.symbol));
+                });
+
+                // Set default base currency to USD
+                baseCurrencySelect.val("USD");
+            } else {
+                console.error("Invalid or empty data");
             }
-        });
-    };
-    populateCurrencyDropdowns();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching currency data:", error);
+        }
+    });
+};
+populateCurrencyDropdowns();
 
     $('#convertCurrency').click(function() {
         var baseCurrency = $('#baseCurrencySelect').val();
@@ -370,9 +367,10 @@ $(document).ready(function() {
             data: {
                 from: baseCurrency,
                 to: targetCurrency,
-                amount: 1 
+                amount: 1 // Assuming the amount is always 1
             },
             success: function(response) {
+                // Parse the response if it's not already an object
                 if (typeof response === "string") {
                     try {
                         response = JSON.parse(response);
@@ -423,8 +421,8 @@ const getCountryData = (chosenValue) => {
             } target=_blank> More Info </a>`);
             $("#countryCurrency").html(result.data.currency.code);
             var currencyCode = result.data.currency.code;
-            if ($("#baseCurrencySelect option[value='" + currencyCode + "']").length) {
-                $("#baseCurrencySelect").val(currencyCode);
+            if ($("#targetCurrencySelect option[value='" + currencyCode + "']").length) {
+                $("#targetCurrencySelect").val(result.data.currency.code);;
             } else {
                 console.error('Currency code not found in base currency dropdown');
             }
