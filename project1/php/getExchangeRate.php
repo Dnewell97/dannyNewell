@@ -3,7 +3,7 @@
 if(isset($_GET['from']) && isset($_GET['to']) && isset($_GET['amount'])) {
     $fromCurrency = $_GET['from'];
     $toCurrency = $_GET['to'];
-    $amount = 1;
+    $amount = $_GET['amount'];
 
     $curl = curl_init();
 
