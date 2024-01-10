@@ -119,6 +119,7 @@ $(document).ready(function() {
     // Function to get and display country border
     const getCountryBorder = (countryCode) => {
         removeBordersAndMarkers();  // Clear existing borders
+        markers.clearLayers(); // Clear markers
 
         $.ajax({
             url: "php/getCountryBorder.php",
