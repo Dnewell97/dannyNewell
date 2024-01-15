@@ -1,12 +1,12 @@
-$(window).on("load", function () {
-    if ($("#loader").length) {
-      $("#loader")
-        .delay(1000)
-        .fadeOut("slow", function () {
-          $(this).remove();
-        });
-    }
-  });
+// $(window).on("load", function () {
+   // if ($("#loader").length) {
+  //    $("#loader")
+  //      .delay(1000)
+  //      .fadeOut("slow", function () {
+  //        $(this).remove();
+  //      });
+//    }
+//  });
 
 $(document).ready(function() {
     // Initialize the map
