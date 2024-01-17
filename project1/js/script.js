@@ -658,10 +658,11 @@ $(document).ready(function() {
             let forecastRow = `
             <tr>
                 <td>${formatDate(forecastDate)}</td>
-                <td>${dailyTemp}°C <span class='weather-emoji'>${dailyEmoji}</span></td>
+                <td>${dailyTemp}°C</td>
+                <td class="center-justify-emoji"><span class='weather-emoji'>${dailyEmoji}</span></td>
             </tr>
         `;
-            $("#forecast-table-body").append(forecastRow);
+        $("#forecast-table-body").append(forecastRow);
         }
     };
 
