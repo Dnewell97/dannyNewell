@@ -379,7 +379,7 @@ $(document).ready(function() {
                 if (response && response.data && response.data.teams && response.data.teams.length > 0) {
                     populateModal(response.data.teams[0]);
                 } else {
-                    console.log('No data available for this country.');
+                    // console.log('No data available for this country.');
                 }
             },
             error: function(xhr, status, error) {
@@ -503,7 +503,7 @@ $(document).ready(function() {
                 if ($("#targetCurrencySelect option[value='" + currencyCode + "']").length) {
                     $("#targetCurrencySelect").val(result.data.currency.code);;
                 } else {
-                    console.error('Currency code not found in base currency dropdown');
+                    // console.error('Currency code not found in base currency dropdown');
                 }
                 $.ajax({
                     url: "php/getCurrency.php",
@@ -521,7 +521,7 @@ $(document).ready(function() {
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error fetching currency data:', error);
+                        // console.error('Error fetching currency data:', error);
                     }
 
                 });
@@ -534,19 +534,21 @@ $(document).ready(function() {
                         country: result.data.capital.name
                     },
                     success: function(response) {
-                        if (response.data.results && response.data.results.length > 0 && response.data.results[0].geometry) {
+                        if (response && response.data && response.data.results && response.data.results.length > 0 && response.data.results[0].geometry) {
                             var lat = response.data.results[0].geometry.lat;
                             var lng = response.data.results[0].geometry.lng;
                             getCurrentWeatherData(lat, lng);
-                            getNearbyWeatherStation(lat, lng)
-
+                            getNearbyWeatherStation(lat, lng);
                         } else {
-                            console.error('No geometry data available');
+                            // Handle the case when the expected data is not available
                         }
-
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle AJAX errors here
+                        console.error("Error fetching data: ", error);
                     }
-
-                })
+                });
+                
             }
         });
 
@@ -574,7 +576,7 @@ $(document).ready(function() {
                         weather.addLayer(weatherMarker);
                     }
                 } else {
-                    console.error('No weather data available');
+                    // console.error('No weather data available');
                 }
             },
             error: function(xhr, status, error) {
