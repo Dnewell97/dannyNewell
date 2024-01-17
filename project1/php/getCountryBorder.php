@@ -2,28 +2,25 @@
 
 $executionStartTime = microtime(true);
 
-// Load GeoJSON data
 $filePath = "../json/countryBorders.geo.json";
 $countryBorders = json_decode(file_get_contents($filePath), true);
 
-$geometry = null;
+$feature = null;
 if (isset($_REQUEST['countryCode'])) {
     foreach ($countryBorders['features'] as $country) {
         if ($country['properties']['iso_a2'] === $_REQUEST['countryCode']) {
-            $geometry = $country['geometry'];
+            $feature = $country;
             break;
         }
     }
 }
 
 $output = ['status' => ['code' => '200', 'name' => 'ok', 'description' => 'success']];
-if ($geometry) {
+if ($feature) {
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
     $output['data'] = [
         "type" => "FeatureCollection",
-        "features" => [
-            ["type" => "Feature", "geometry" => $geometry]
-        ]
+        "features" => [$feature] 
     ];
 } else {
     $output['status']['code'] = "400";

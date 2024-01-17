@@ -15,7 +15,6 @@ if (isset($_REQUEST['selectCountryName']) && !empty($_REQUEST['selectCountryName
     exit;
 }
 
-
 $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
