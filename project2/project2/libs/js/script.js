@@ -1,15 +1,12 @@
-let searchableData = { staff: [], departments: [], locations: [] }; 
-// let startButton;  // Declare startButton outside the event listener
-// let startMenu;  
+let searchableData = { staff: [], departments: [], locations: [] };
 let personnelIcon = document.getElementById('personnelIcon');
 let locationIcon = document.getElementById('locationIcon');
 let departmentIcon = document.getElementById('departmentIcon');
 let taskbarMiddle = document.getElementById('taskbar-middle');
-// let startButton 
-// let startMenu 
-const startButton = document.getElementById('start-button');
-const startMenu = document.getElementById('start-menu');
-let programTab; 
+let startButton = document.getElementById('start-button');
+let startMenu = document.getElementById('start-menu');
+let programTab;
+
 const hideIcons = () => {
     personnelIcon.style.display = 'none';
     locationIcon.style.display = 'none';
@@ -17,106 +14,99 @@ const hideIcons = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    const tableIcon = document.getElementById('tableIcon');
+    const tableIconExtra = document.querySelectorAll('.icon-table');
+    const companyDirectory = document.getElementById('companyDirectory');
+    const maximizeButton = document.getElementById('maximizeButton');
+    const taskbarMiddle = document.getElementById('taskbar-middle');
 
-  const tableIcon = document.getElementById('tableIcon');
-  const tableIconExtra = document.querySelectorAll('.icon-table');
+    // Create program tab
+    programTab = document.createElement('div');
+    programTab.id = 'programTab';
+    programTab.textContent = 'Company Directory';
 
-  const companyDirectory = document.getElementById('companyDirectory');
-  const maximizeButton = document.getElementById('maximizeButton');
-  const taskbarMiddle = document.getElementById('taskbar-middle');
+    // Maximize table
+    const maximizeTable = () => {
+        const tableContainers = document.getElementsByClassName('table-container');
+        if (tableContainers.length > 0) {
+            tableContainers[0].classList.toggle('larger');
+        }
+    };
 
-  // Create program tab
-  const programTab = document.createElement('div');
-  programTab.id = 'programTab';
-  programTab.textContent = 'Company Directory';
+    // Minimize company directory
+    const showIcons = () => {
+        personnelIcon.style.display = 'inline-block';
+        locationIcon.style.display = 'inline-block';
+        departmentIcon.style.display = 'inline-block';
+    };
 
-//   // Hide extra icons
-//   const hideExtraIcons = () => {
-//     tableIconExtra.forEach(icon => {
-//       icon.style.display = 'none'; 
-//     });
-//   };
-
-  // Maximize table
-  const maximizeTable = () => {
-    const tableContainers = document.getElementsByClassName('table-container');
-    if (tableContainers.length > 0) {
-      tableContainers[0].classList.toggle('larger');
-    }
-  };
-
-  // Minimize company directory
-
-const showIcons = () => {
-    personnelIcon.style.display = 'inline-block';  // Adjust the display property based on your styling
-    locationIcon.style.display = 'inline-block';
-    departmentIcon.style.display = 'inline-block';
-};
-  hideIcons();
-
-  const minimizeCompanyDirectory = () => {
-    hideCompanyDirectory();
     hideIcons();
-    programTab.style.backgroundColor = '';
-    programTab.style.color = '';
-  };
 
-  // Toggle company directory
-  const toggleCompanyDirectory = () => {
-    if (companyDirectory.style.display === 'none') {
-        // If company directory is closed, hide the icons
-        showIcons();
-    } else {
-        // If company directory is open, show the icons
+    const minimizeCompanyDirectory = () => {
+        hideCompanyDirectory();
         hideIcons();
-    }
-    companyDirectory.style.display = companyDirectory.style.display === 'none' ? 'block' : 'none';
-    programTab.style.backgroundColor = programTab.style.backgroundColor === '' ? '#C0C0C0' : '';
-  };
+        programTab.style.backgroundColor = '';
+        programTab.style.color = '';
+    };
 
+    // Toggle company directory
+    const toggleCompanyDirectory = () => {
+        if (companyDirectory.style.display === 'none') {
+            // If company directory is closed, hide the icons
+            showIcons();
+        } else {
+            // If company directory is open, show the icons
+            hideIcons();
+        }
+        companyDirectory.style.display = companyDirectory.style.display === 'none' ? 'block' : 'none';
+        programTab.style.backgroundColor = programTab.style.backgroundColor === '' ? '#EBEBEB' : '';
+    };
 
+    // Handle table icon click
+    tableIcon.addEventListener('click', () => {
+        companyDirectory.style.display = 'block';
+      
+        if (!taskbarMiddle.contains(programTab)) {
+          taskbarMiddle.appendChild(programTab);
+        }
 
+      
+        programTab.style.backgroundColor = '#C0C0C0';
+        
+        showIcons();
+      
+      });
+    
+      
 
-  // Handle table icon click
-  tableIcon.addEventListener('click', () => {
-    companyDirectory.style.display = 'block';
-    showIcons();
-    if (!taskbarMiddle.contains(programTab)) {
-      taskbarMiddle.appendChild(programTab);
-    }
-    programTab.style.backgroundColor = '#C0C0C0';
-  });
+    // Click handler for program tab
+    programTab.addEventListener('click', toggleCompanyDirectory);
 
-  // Click handler for program tab
-  programTab.addEventListener('click', toggleCompanyDirectory);
+    // Minimize button click
+    document.getElementById('minimizeButton').addEventListener('click', minimizeCompanyDirectory);
 
-  // Minimize button click
-  document.getElementById('minimizeButton').addEventListener('click', minimizeCompanyDirectory);
+    // Maximize button click
+    maximizeButton.addEventListener('click', maximizeTable);
 
-  // Maximize button click
-  maximizeButton.addEventListener('click', maximizeTable);
-
-  // Hide company directory
-  const hideCompanyDirectory = () => {
-    companyDirectory.style.display = 'none';
-    hideIcons();
-  };
-
-
-  
+    // Hide company directory
+    const hideCompanyDirectory = () => {
+        companyDirectory.style.display = 'none';
+        hideIcons();
+    };
 });
+
 const toggleStartMenu = () => {
     startMenu.style.display = startMenu.style.display === 'none' ? 'block' : 'none';
-  };
+};
 // Ensure startButton is defined before adding event listeners
 if (startButton) {
     startButton.addEventListener('click', (event) => {
-        toggleStartMenu
-        startMenu.style.display = startMenu.style.display === 'none' ? 'block' : 'none';
+        event.stopPropagation();
+        toggleStartMenu();
     });
 
     startButton.addEventListener('mouseover', () => {
-        // startButton.style.backgroundColor = '#080808';
+        startButton.style.backgroundColor = '';
         startButton.style.color = 'white';
     });
 
@@ -129,9 +119,8 @@ if (startButton) {
 document.addEventListener('click', (event) => {
     const target = event.target;
 
-    if (startMenu && !startMenu.contains(target) && target !== startButton && !companyDirectory.contains(target) && target !== programTab) {
+    if (startMenu && !startMenu.contains(target) && target !== startButton && target !== programTab) {
         startMenu.style.display = 'none';
-        hideCompanyDirectory();
     }
 });
 
@@ -155,7 +144,7 @@ document.addEventListener('click', (event) => {
       };
       const removeProgramTab = () => {
         if (taskbarMiddle.contains(programTab)) {
-          taskbarMiddle.remove(programTab);
+          taskbarMiddle.removeChild(programTab);
         }
     
       };
@@ -175,34 +164,34 @@ document.addEventListener('click', (event) => {
         companyDirectory.style.display = companyDirectory.style.display === 'none' ? 'block' : 'none';
         programTab.style.backgroundColor = programTab.style.backgroundColor === '' ? '#C0C0C0' : '';
       };
-    // Add program tab to the taskbar middle when the table icon is clicked
+   // Add program tab to the taskbar middle when the table icon is clicked
     tableIcon.addEventListener('click', toggleCompanyDirectory); 
     tableIcon.addEventListener('click', () => {
-        // toggleCompanyDirectory();
+        toggleCompanyDirectory();
     
-        // Toggle the display of the program tab when table icon is clicked
-        // if (!taskbarMiddle.contains(programTab)) {
-        //     taskbarMiddle.appendChild(programTab);
-        //     toggleCompanyDirectory();
-        // }
+     //   Toggle the display of the program tab when table icon is clicked
+        if (!taskbarMiddle.contains(programTab)) {
+            taskbarMiddle.appendChild(programTab);
+            toggleCompanyDirectory();
+        }
     });
     
 
 
-function showModal(modalId) {
-    var modal = document.getElementById(modalId);
-    modal.style.display = 'block';
-}
+// function showModal(modalId) {
+//     var modal = document.getElementById(modalId);
+//     modal.style.display = 'block';
+// }
 
-function closeModal(modalId) {
-    var modal = document.getElementById(modalId);
-    modal.style.display = 'none';
-}
+// function closeModal(modalId) {
+//     var modal = document.getElementById(modalId);
+//     modal.style.display = 'none';
+// }
 
-function toggleTable(tableId) {
-    var table = document.getElementById(tableId);
-    table.style.display = table.style.display === 'none' ? 'block' : 'none';
-}
+// function toggleTable(tableId) {
+//     var table = document.getElementById(tableId);
+//     table.style.display = table.style.display === 'none' ? 'block' : 'none';
+// }
 function updateDateTime() {
     const now = new Date();
     const timeString = now.toLocaleTimeString(undefined, { 
@@ -255,12 +244,12 @@ const populateEmployeeData = (data) => {
   };
 
 // Add this function to your script.js
-function scrollTable(direction) {
-    const tableContainer = document.getElementById('scrollableTable');
-    const scrollAmount = 50; // Adjust the scroll amount as needed
-    tableContainer.scrollTop += direction * scrollAmount;
-    updateTableFooter();
-}
+// function scrollTable(direction) {
+//     const tableContainer = document.getElementById('scrollableTable');
+//     const scrollAmount = 50; // Adjust the scroll amount as needed
+//     tableContainer.scrollTop += direction * scrollAmount;
+//     updateTableFooter();
+// }
 
 function updateTableFooter() {
     const tableContainer = document.getElementById('scrollableTable');
@@ -271,25 +260,25 @@ function updateTableFooter() {
     tableFooter.textContent = `Record: ${currentPage} of ${totalRows}`;
 }
 // Add these functions to your existing script
-function toggleEditMenu() {
-    var editMenu = document.getElementById("editMenu");
-    editMenu.style.display = (editMenu.style.display === "block") ? "none" : "block";
-}
+// function toggleEditMenu() {
+//     var editMenu = document.getElementById("editMenu");
+//     editMenu.style.display = (editMenu.style.display === "block") ? "none" : "block";
+// }
 
-function addEntry() {
-    // Add logic for adding an entry
-    console.log("Adding entry...");
-}
+// function addEntry() {
+//     // Add logic for adding an entry
+//     console.log("Adding entry...");
+// }
 
-function addLocation() {
-    // Add logic for adding a location
-    console.log("Adding location...");
-}
+// function addLocation() {
+//     // Add logic for adding a location
+//     console.log("Adding location...");
+// }
 
-function addDepartment() {
-    // Add logic for adding a department
-    console.log("Adding department...");
-}
+// function addDepartment() {
+//     // Add logic for adding a department
+//     console.log("Adding department...");
+// }
 
 
 

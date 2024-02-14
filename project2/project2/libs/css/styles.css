@@ -52,18 +52,21 @@ body {
     cursor: pointer;
     font-size: 0.8em;
     user-select: none;
-    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
     height: 30px;
     margin-left: 5px;
+    
+    /* Set default outer border styles */
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
 }
 
-#programTab {
-    transition: background-color 0.3s, color 0.3s;  /* Add transition for smoother effect */
+#programTab:active {
+    /* Set outer border styles for clicked state */
+    box-shadow: inset -1px -1px 0 #ffffff88, inset 1px 1px 0 #00000088;
 }
 
-#programTab:hover {
-    background-color: #000080 !important;  /* Add !important to override inline style */
-    color: white !important;  /* Add !important to override inline style */
+#programTab:active {
+    /* Set inner border styles for clicked state */
+    border: inset -2px -2px var(--button-face), inset 2px 2px var(--button-shadow);
 }
 
 
@@ -177,7 +180,7 @@ body {
 }
 #searchBar {
     background-color: #C0C0C0;
-    height: 40px;
+    height: 38px;
     position: relative;
 }
 
@@ -190,10 +193,12 @@ body {
 }
 
 #searchBar input {
+    height: 38px;
     width: 500px;
     z-index: 2;
     position: relative;
     margin-left: 75px;
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
 }
 
 
@@ -276,6 +281,10 @@ td.check-cell {
     width: 100%;
     table-layout: fixed;
 }
+
+table.interactive > tbody > tr {
+    cursor: pointer;
+  }
 
 .table th, .table td {
     white-space: nowrap;
@@ -377,6 +386,7 @@ td.check-cell {
     border: 2px solid #00807F;
     font-weight: bolder;
     text-align: center;
+    color: white;
 }
 
 .icon-container:hover {
@@ -387,6 +397,7 @@ td.check-cell {
 /* Additional styles specific to icon-common class */
 .icon-common {
     font-size: 1 !important;
+    color: white;
 }
 
 .icon-3{
@@ -417,3 +428,12 @@ img {
     /* Your existing styles for the company directory window */
 }
 
+#companyDirectoryTable {
+    /* Set a fixed height for the table to enable scrolling */
+    max-height: 300px; /* Adjust the height as needed */
+
+    /* Add the custom scrollbar styles */
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--button-face) var(--button-shadow); /* Firefox */
+}
