@@ -232,6 +232,7 @@ table {
     width: 100%;
     font-size: 20px;
     background: #FFFFFF;
+    border: #C0C0C0;
 }
 
 #employeesTable tbody tr:hover td {
@@ -242,7 +243,7 @@ table {
 td.check-cell {
     background: #C0C0C0;
     font-size: 1em;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .check-cell::before {
@@ -286,11 +287,12 @@ table.interactive > tbody > tr {
     cursor: pointer;
   }
 
-.table th, .table td {
+/* .table th, .table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
+    width: 100%;
+} */
 
 /* Add these styles to your existing CSS */
 .table-container {
@@ -313,20 +315,23 @@ table.interactive > tbody > tr {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: #C0C0C0;
+    border: #C0C0C0;
+    /* background: #C0C0C0; */
 }
 
 #employeesTable th {
     position: sticky;
     top: 0;
-    z-index: 1;
-    background-color: #C0C0C0;
+    z-index: 10;
+    background-color: white;
 }
 
 /* Add these styles to your existing CSS */
 #employeesTable tbody tr:hover {
     background-color: #051179;
     color: #FFFFFF;
+    z-index: 1;
+    border: #C0C0C0;
 }
 
 /* Add this to your existing CSS */
@@ -437,3 +442,64 @@ img {
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: var(--button-face) var(--button-shadow); /* Firefox */
 }
+
+.editIcon {
+    max-height: 20px;
+    text-align: right;
+}
+
+.deleteIcon {
+    max-height: 20px;
+    text-align: right !important;
+}
+
+/* Remove rounded corners */
+.modal-content {
+    border-radius: 0; 
+  }
+  
+  /* Window header */
+  .modal-header {
+    background: linear-gradient(to right, #051179, #0d7aca);
+    color: #FFFFFF;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    border-radius: 0;
+  }
+  
+  .modal-header button{
+    cursor: pointer;
+    padding: 2px 5px;
+    background: #C0C0C0;
+    border: 1px solid black;
+    max-width: 23px;
+    max-height: 23px;
+    text-align: center;
+    font-size: 0.7em;
+    font-weight: bold;
+    justify-content: right;
+    margin: 1px;
+  }
+  
+  /* Modal body */
+  .modal-body {
+    background-color: #c0c0c0;
+    color: #000000;
+  }
+  
+  /* Form elements */
+  .form-control,
+  .btn {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  /* Submit button */
+  .btn-outline-info {
+    background: #C0C0C0;
+    color: #000000;
+    border-color: #000000;
+  }

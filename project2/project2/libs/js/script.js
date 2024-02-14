@@ -176,22 +176,6 @@ document.addEventListener('click', (event) => {
         }
     });
     
-
-
-// function showModal(modalId) {
-//     var modal = document.getElementById(modalId);
-//     modal.style.display = 'block';
-// }
-
-// function closeModal(modalId) {
-//     var modal = document.getElementById(modalId);
-//     modal.style.display = 'none';
-// }
-
-// function toggleTable(tableId) {
-//     var table = document.getElementById(tableId);
-//     table.style.display = table.style.display === 'none' ? 'block' : 'none';
-// }
 function updateDateTime() {
     const now = new Date();
     const timeString = now.toLocaleTimeString(undefined, { 
@@ -208,8 +192,94 @@ setInterval(updateDateTime, 1000);
 // Initial update
 updateDateTime();
 
+const getAllDepartments = () => {
+    $.ajax({
+      type: "GET",
+      url: "libs/php/getAllDepartments.php",
+      dataType: "json",
+      success: (response) => {
+        let code = response.status.code;
+        if (code === "200") {
+          let departments = response.data;
+  
+          if (departments.length > 0) {
+            // Get the select element
+            let selectElement = document.getElementById('allDepartments');
+  
+            // Clear existing options
+            selectElement.innerHTML = '';
+  
+            // Create and append new options
+            departments.forEach(department => {
+              let option = document.createElement('option');
+              option.value = department.id;
+              option.text = department.name;
+              selectElement.appendChild(option);
+            });
+          } else {
+            console.log('Could not load departments')
+          }
+        }
+      },
+      error: () => {
+        console.log('Could not load departments');
+      },
+    });
+  };
 
-  const getAllEmployeeInfo = () => {
+  const getLocation = () => {
+    $.ajax({
+      type: "GET",
+      url: "libs/php/getAllLocation.php",
+      dataType: "json",
+      success: (response) => {
+        let code = response.status.code;
+        if (code === "200") {
+          let locations = response.data;  // Change 'location' to 'locations' for consistency
+  
+          if (locations.length > 0) {
+            // Get the select element
+            let selectElement = document.getElementById('add-department-location');
+  
+            // Clear existing options
+            selectElement.innerHTML = '';
+  
+            // Create and append new options
+            locations.forEach(location => {
+              let option = document.createElement('option');
+              option.value = location.id;
+              option.text = location.name;
+              selectElement.appendChild(option);
+            });
+          } else {
+            console.log('Could not load locations');  // Change 'location' to 'locations' for consistency
+          }
+        }
+      },
+      error: () => {
+        console.log('Could not load locations');
+      },
+    });
+  };
+
+document.getElementById('personnelIcon').addEventListener('click', function() {
+    // Show the Bootstrap Modal with the specified ID
+    var modal = new bootstrap.Modal(document.getElementById('addPersonnel'));
+    modal.show();
+});
+
+document.getElementById('departmentIcon').addEventListener('click', function() {
+    var modal = new bootstrap.Modal (document.getElementById('addDepartment'));
+    modal.show();
+} );
+
+document.getElementById('locationIcon').addEventListener('click', function() {
+    var modal = new bootstrap.Modal (document.getElementById('addLocation'));
+    modal.show();
+} );
+
+
+const getAllEmployeeInfo = () => {
     $.ajax({
         type: "POST",
         url: "libs/php/getAll.php",
@@ -232,56 +302,79 @@ updateDateTime();
 const populateEmployeeData = (data) => {
     let content = "";
     for (let i = 0; i < data.length; i++) {
-      const employee = data[i];
-      content += `<tr>`;
-      content += `<td class="listItem" title="${employee.firstName} ${employee.lastName}" data-bs-toggle="modal" data-bs-target="#readOnlyForm" data-id="${employee.id}">${employee.firstName} ${employee.lastName}</td>`;
-      content += `<td class="d-none d-sm-block">${employee.department}</td>`;
-      content += `<td>${employee.location}</td>`;
-      content += `</tr>`;
+        const employee = data[i];
+        content += `<tr>`;
+        content += `<td class="listItem" title="${employee.firstName} ${employee.lastName}" data-bs-toggle data-bs-target="#readOnlyForm" data-id="${employee.id}">${employee.firstName} ${employee.lastName}</td>`;
+        content += `<td class="d-none d-sm-block">${employee.department}</td>`;
+        content += `<td>${employee.location}</td>`;
+        content += `<td><img src="libs/css/images/edit.png" alt="Edit" class="editIcon" data-id="${employee.id}"></td>`;
+        content += `<td><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon" data-id="${employee.id}"></td>`;
+        content += `</tr>`;
     }
-  
+
     $("#employeesList").html(content);
-  };
+};
 
-// Add this function to your script.js
-// function scrollTable(direction) {
-//     const tableContainer = document.getElementById('scrollableTable');
-//     const scrollAmount = 50; // Adjust the scroll amount as needed
-//     tableContainer.scrollTop += direction * scrollAmount;
-//     updateTableFooter();
-// }
-
-function updateTableFooter() {
-    const tableContainer = document.getElementById('scrollableTable');
-    const tableFooter = document.getElementById('tableFooter');
-    const totalRows = tableContainer.scrollHeight / 20; // Assuming each row is 20px in height
-    const visibleRows = tableContainer.clientHeight / 20; // Assuming each row is 20px in height
-    const currentPage = Math.ceil(tableContainer.scrollTop / 20) + 1; // Assuming each row is 20px in height
-    tableFooter.textContent = `Record: ${currentPage} of ${totalRows}`;
+function updateTable(foundData) {
+    // Update your table with the found data
+    populateEmployeeData(foundData);
 }
-// Add these functions to your existing script
-// function toggleEditMenu() {
-//     var editMenu = document.getElementById("editMenu");
-//     editMenu.style.display = (editMenu.style.display === "block") ? "none" : "block";
-// }
 
-// function addEntry() {
-//     // Add logic for adding an entry
-//     console.log("Adding entry...");
-// }
+function searchAll(searchText) {
+    $.ajax({
+      type: "GET",
+      url: "libs/php/SearchAll.php",
+      data: { txt: searchText },
+      dataType: "json",
+      success: function (response) {
+        console.log('Response:', response); // Log the entire response object
+        let code = response.status.code;
+        if (code === "200") {
+            let found = response.data.found;
+            console.log('Found:', found);
+  
+          // Filter personnel data
+          let personnelData = found.filter(
+            (data) =>
+              data.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+              data.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
+              data.departmentName.toLowerCase().includes(searchText.toLowerCase())
+          );
+  
+          console.log('Filtered personnelData:', personnelData);
+  
+          // Update the table with the filtered personnel data
+          updateTable(personnelData);
+  
+          // Similar logic for departments and locations if needed
+  
+        } else {
+          console.log('Query failed:', response.status.description);
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.error('Error during search:', textStatus, errorThrown);
+      }
+    });
+  }
+  
+  // Handle input event for search
+  $('#searchBarSearch').on('input', function () {
+    let searchText = $(this).val();
+    searchAll(searchText);
+  });
+  
 
-// function addLocation() {
-//     // Add logic for adding a location
-//     console.log("Adding location...");
-// }
-
-// function addDepartment() {
-//     // Add logic for adding a department
-//     console.log("Adding department...");
-// }
-
-
-
-  $(document).ready(() => {
+function resetTable() {
+    // Implement logic to reset the table to its original state
+    // For example, reload all data or clear the table
     getAllEmployeeInfo();
+    getAllDepartments();
+    getLocation();
+}
+
+$(document).ready(() => {
+    getAllEmployeeInfo();
+    getAllDepartments();
+    getLocation();
 });
