@@ -81,17 +81,19 @@
                 </div>
             </div>
             <div id="searchBar">
-               <div id="searchBarText"> Search</div> <input id="searchBarSearch" type="search">
+               <div id="searchBarText"> Search</div> <input autocomplete="off" id="searchBarSearch" type="search">
             </div>
+            
         <div class="table-container">
+            
             <table id="employeesTable">
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Department</th>
                         <th>Location</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th width="8%" style="text-align:center">Edit</th>
+                        <th width="8%" style="text-align:center">Delete</th>
                     </tr>
                 </thead>
                 <tbody id="employeesList"></tbody>

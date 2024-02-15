@@ -296,27 +296,32 @@ table.interactive > tbody > tr {
 
 /* Add these styles to your existing CSS */
 .table-container {
-    max-height: 400px;
+    height: 400px;
     overflow-y: auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* flex-grow: 1; */
+    background-color: white;
 }
 .table-container.larger {
-    max-height: 550px;
-    overflow-y: auto;
+    height: 500px;
+    /* overflow-y: auto; */
 
 }
 #employeesTable {
     width: 100%;
     table-layout: fixed;
-    height: 400px;
+    border-collapse: collapse; /* Ensure borders are collapsed */
 }
 
 #employeesTable th, #employeesTable td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border: #C0C0C0;
-    /* background: #C0C0C0; */
+    border: 1px solid #C0C0C0; /* Add border to each cell */
+    padding: 8px; /* Adjust padding as needed */
 }
 
 #employeesTable th {
@@ -326,13 +331,24 @@ table.interactive > tbody > tr {
     background-color: white;
 }
 
-/* Add these styles to your existing CSS */
 #employeesTable tbody tr:hover {
     background-color: #051179;
     color: #FFFFFF;
     z-index: 1;
-    border: #C0C0C0;
 }
+
+#employeesTable tbody tr {
+    height: 40px!important; /* Set a fixed height for each table row */
+}
+
+#employeesTable td.check-cell {
+    font-size: 1em;
+}
+
+.check-cell::before {
+    content: "□";
+}
+
 
 /* Add this to your existing CSS */
 .edit-bar {

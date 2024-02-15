@@ -262,6 +262,7 @@ const getAllDepartments = () => {
     });
   };
 
+
 document.getElementById('personnelIcon').addEventListener('click', function() {
     // Show the Bootstrap Modal with the specified ID
     var modal = new bootstrap.Modal(document.getElementById('addPersonnel'));
@@ -277,12 +278,7 @@ document.getElementById('locationIcon').addEventListener('click', function() {
     var modal = new bootstrap.Modal (document.getElementById('addLocation'));
     modal.show();
 } );
-
-
-
-$(document).ready(() => {
-    // Initial load
-
+    // Step 2: Modify Data Loading Functions
     const getAllEmployeeInfo = () => {
         $.ajax({
             type: "POST",
@@ -299,94 +295,72 @@ $(document).ready(() => {
                 console.error("Error fetching data:", error);
                 generateToast("Could not load employee data", "red");
             },
-            complete: () => {
-                // Ensure that the table is populated only after the data is fetched
-                populateEmployeeData(searchableData["staff"]);
-            }
         });
     };
-    
-    // ... (rest of the code remains the same)
-    
-    
-    // Example 1
-    // Example 1
+
+    // ... (existing code)
     const populateEmployeeData = (data) => {
         let content = "";
         for (let i = 0; i < data.length; i++) {
             const employee = data[i];
             content += `<tr>`;
             content += `<td class="listItem" title="${employee.firstName} ${employee.lastName}" data-bs-toggle data-bs-target="#readOnlyForm" data-id="${employee.id}">${employee.firstName} ${employee.lastName}</td>`;
-            content += `<td class="d-none d-sm-block">${employee.departmentName}</td>`;
-            content += `<td>${employee.locationName}</td>`;
-            content += `<td style="text-align:center"><img src="libs/css/images/edit.png" alt="Edit" class="editIcon" data-id="${employee.id}"></td>`;
-            content += `<td style="text-align:center"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon" data-id="${employee.id}"></td>`;
+            content += `<td class="d-none d-sm-block">${employee.department}</td>`;
+            content += `<td>${employee.location}</td>`;
+            content += `<td><img src="libs/css/images/edit.png" alt="Edit" class="editIcon" data-id="${employee.id}"></td>`;
+            content += `<td><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon" data-id="${employee.id}"></td>`;
             content += `</tr>`;
         }
-    
-        // Ensure that the #employeesList element exists
-        const employeesList = $("#employeesList");
-        if (employeesList.length) {
-            employeesList.html(content);
+    // Step 4: Attach Event Listeners
+    $("#employee-search").keyup((e) => {
+        searchPersonnel(e.target.value);
+        if (e.target.value == "") {
+            getAllEmployeeInfo();
+        }
+    });
+
+ 
+
+    // Step 5: Reset Data on Empty Search
+    const searchPersonnel = (value) => {
+        if (value === "") {
+            getAllEmployeeInfo();
         } else {
-            console.error("#employeesList element not found!");
+            let personnelData = searchableData["staff"].filter(
+                (data) =>
+                    data.firstName.toLowerCase().includes(value.toLowerCase()) ||
+                    data.lastName.toLowerCase().includes(value.toLowerCase()) ||
+                    data.department.toLowerCase().includes(value.toLowerCase())
+            );
+
+            populateEmployeeData(personnelData);
         }
     };
-    
-    
-    function searchAll(searchText) {
-        $.ajax({
-            type: "GET",
-            url: "libs/php/SearchAll.php",
-            data: { txt: searchText },
-            dataType: "json",
-            success: function (response) {
-                console.log('Response:', response);
-                let code = response.status.code;
-                if (code === "200") {
-                    let found = response.data.found;
-    
-                    if (searchText.trim()) {
-                        // Filter personnel data
-                        let personnelData = found.filter(
-                            (data) =>
-                                data.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-                                data.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
-                                data.departmentName.toLowerCase().includes(searchText.toLowerCase())
-                        );
-    
-                        // Update the table with the filtered personnel data
-                        populateEmployeeData(personnelData);
-                    } else {
-                        // Update the table with all personnel data
-                        populateEmployeeData(found);
-                    }
-                } else {
-                    console.log('Query failed:', response.status.description);
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('Error during search:', textStatus, errorThrown);
-            }
-        });
-    }
-    
-    
+
+    // ... (existing code)
+
     // Handle input event for search
     $('#searchBarSearch').on('input', function () {
         let searchText = $(this).val();
         searchAll(searchText);
     });
-    
+
+    // ... (existing code)
+
+    // Step 6: Implement Reset Table Function
     function resetTable() {
-        // Implement logic to reset the table to its original state
-        // For example, reload all data or clear the table
         getAllEmployeeInfo();
         getAllDepartments();
         getLocation();
     }
 
-    getAllEmployeeInfo();
-    getAllDepartments();
-    getLocation();
-});
+    // ... (existing code)
+
+    $(document).ready(() => {
+        getAllEmployeeInfo();
+        getAllDepartments();
+        getLocation();
+    });
+
+    // ... (existing code)
+    };
