@@ -33,6 +33,41 @@
 		exit;
 
 	}	
+		// check if any inputs are empty
+		if(empty($_REQUEST['name']) || empty($_REQUEST['locationID'])){
+			$output['status']['code'] = "500";
+			$output['status']['name'] = "failure";
+			$output['status']['description'] = "referential integrity compromised";
+			$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
+			$output['data'] = [];
+	
+			mysqli_close($conn);
+	
+			echo json_encode($output);
+	
+			exit;
+		}
+	
+		// check if values already exist in the database
+		$query = $conn->prepare('SELECT * FROM department WHERE name=? AND locationID=?');
+		$query->bind_param("si", $_REQUEST['name'], $_REQUEST['locationID']);
+		$query->execute();
+		$result = $query->get_result();
+	
+		if($result->num_rows > 0){
+			$output['status']['code'] = "1062";
+			$output['status']['name'] = "failure";
+			$output['status']['description'] = "duplicate entries";
+			$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
+			$output['data'] = [];
+	
+			mysqli_close($conn);
+	
+			echo json_encode($output);
+	
+			exit;
+		}
+	
 
 	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
 	// $_REQUEST used for development / debugging. Remember to change to $_POST for production

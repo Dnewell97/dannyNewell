@@ -20,19 +20,82 @@ if (mysqli_connect_errno()) {
     mysqli_close($conn);
 
     echo json_encode($output);
-
     exit;
 }
 
-$query = $conn->prepare('SELECT `p`.`id`, `p`.`firstName`, `p`.`lastName`, `p`.`email`, `p`.`jobTitle`, `d`.`id` as `departmentID`, `d`.`name` AS `departmentName`, `l`.`id` as `locationID`, `l`.`name` AS `locationName` FROM `personnel` `p` LEFT JOIN `department` `d` ON (`d`.`id` = `p`.`departmentID`) LEFT JOIN `location` `l` ON (`l`.`id` = `d`.`locationID`) WHERE `p`.`firstName` LIKE ? OR `p`.`lastName` LIKE ? OR `p`.`email` LIKE ? OR `p`.`jobTitle` LIKE ? OR `d`.`name` LIKE ? OR `l`.`name` LIKE ? ORDER BY `p`.`lastName`, `p`.`firstName`, `d`.`name`, `l`.`name`');
+$activeTab = isset($_GET['activeTab']) ? $_GET['activeTab'] : null;
+
+// Initialize query and bind parameters
+$query = '';
+$bindParams = '';
+
+if ($activeTab === 'employee-tab') {
+    $query = 'SELECT p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.firstName LIKE ? OR p.lastName LIKE ? OR p.email LIKE ? OR p.jobTitle LIKE ? OR d.name LIKE ? OR l.name LIKE ? ORDER BY p.lastName, p.firstName, d.name, l.name';
+    $bindParams = "ssssss";
+} elseif ($activeTab === 'department-tab') {
+    $query = 'SELECT d.name as department, l.name as location FROM department d LEFT JOIN location l ON (l.id = d.locationID) WHERE d.name LIKE ? OR l.name LIKE ? ORDER BY d.name, l.name';
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $likeText, $likeText);
+} elseif ($activeTab === 'location-tab') {
+    $query = 'SELECT name FROM location WHERE name LIKE ? ORDER BY name';
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $likeText);
+}
+
+// Check if the query is empty
+
+if (empty($query)) {
+    $output['status']['code'] = "400";
+    $output['status']['name'] = "executed";
+    $output['status']['description'] = "query is empty";
+    $output['data'] = [];
+
+    mysqli_close($conn);
+    echo json_encode($output);
+    exit;
+}
+
+// Only prepare and bind if the query is not empty
+$stmt = $conn->prepare($query);
+
+if (false === $stmt) {
+    $output['status']['code'] = "400";
+    $output['status']['name'] = "executed";
+    $output['status']['description'] = "query failed";
+    $output['data'] = [];
+
+    mysqli_close($conn);
+    echo json_encode($output);
+    exit;
+}
+
+
+
+// Bind parameters only if the query is not empty
+if (!empty($likeText)) {
+    $types = str_repeat('s', count($likeText));
+
+    // Construct the bind_param argument array
+    $bindParams = [$types];
+    foreach ($likeText as &$param) {
+        $bindParams[] = &$param;
+    }
+
+    // Call bind_param with the constructed argument array
+    if (!empty($types)) {
+        call_user_func_array([$stmt, 'bind_param'], $bindParams);
+    }
+}
+
+
+
+
+
 
 $likeText = isset($_REQUEST['txt']) ? "%" . $_REQUEST['txt'] . "%" : "";
+$stmt->bind_param($bindParams, $likeText, $likeText, $likeText, $likeText, $likeText, $likeText);
 
-
-$query->bind_param("ssssss", $likeText, $likeText, $likeText, $likeText, $likeText, $likeText);
-
-
-$queryExecutionResult = $query->execute();
+$queryExecutionResult = $stmt->execute();
 
 if (false === $queryExecutionResult) {
     $output['status']['code'] = "400";
@@ -41,13 +104,11 @@ if (false === $queryExecutionResult) {
     $output['data'] = [];
 
     mysqli_close($conn);
-
     echo json_encode($output);
-
     exit;
 }
 
-$result = $query->get_result();
+$result = $stmt->get_result();
 
 $found = [];
 
@@ -62,6 +123,5 @@ $output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000
 $output['data']['found'] = $found;
 
 mysqli_close($conn);
-
 echo json_encode($output);
 ?>

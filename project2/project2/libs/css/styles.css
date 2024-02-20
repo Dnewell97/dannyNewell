@@ -310,44 +310,76 @@ table.interactive > tbody > tr {
     /* overflow-y: auto; */
 
 }
-#employeesTable {
+.nav.nav-tabs {
+    background-color: #C0C0C0; /* Grey background color */
+    border: none; /* Remove default borders */
+    border-radius: 0; /* Remove curved edges */
+    margin-top: 0px; /* Adjust the negative margin to reduce the gap */
+    margin-bottom: -25px; /* Remove margin bottom */
+    padding-bottom: 2px; /* Remove padding bottom */
+    height: 70px;
     width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse; /* Ensure borders are collapsed */
+
 }
 
-#employeesTable th, #employeesTable td {
+.nav.nav-tabs .nav-item {
+    margin-bottom: 0; /* Remove default margin */
+}
+
+.nav.nav-tabs .nav-link {
+    color: #000; /* Set text color */
+    border: none; /* Remove default borders */
+    border-radius: 0; /* Remove curved edges */
+    background-color: #c0c0c0; /* Grey background color */
+    margin-top: -24px;
+}
+
+.nav.nav-tabs .nav-link.active {
+    color: #fff; /* Set active text color */
+    background-color: #051179; /* Active background color */
+}
+
+
+/* Styling for Windows 98-like Table */
+.data-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border: 1px solid #C0C0C0; /* Add border to each cell */
-    padding: 8px; /* Adjust padding as needed */
+    border: 1px solid #C0C0C0;
+    padding: 8px;
 }
 
-#employeesTable th {
+.data-table th {
     position: sticky;
     top: 0;
     z-index: 10;
     background-color: white;
 }
 
-#employeesTable tbody tr:hover {
+.data-table tbody tr:hover {
     background-color: #051179;
     color: #FFFFFF;
     z-index: 1;
 }
 
-#employeesTable tbody tr {
-    height: 40px!important; /* Set a fixed height for each table row */
+.data-table tbody tr {
+    height: 40px!important;
 }
 
-#employeesTable td.check-cell {
+.data-table td.check-cell {
     font-size: 1em;
 }
 
 .check-cell::before {
     content: "□";
 }
+
 
 
 /* Add this to your existing CSS */
