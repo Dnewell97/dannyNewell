@@ -322,7 +322,60 @@ document.getElementById('locationIcon').addEventListener('click', function() {
 } );
 
 
-    const getAllEmployeeInfo = () => {
+   
+
+        // Function to open Edit Department Modal and load department data
+// Add an event listener for the "Edit Department" button click
+
+
+
+const updateFooterOnHover = () => {
+    // First, remove any existing hover events to avoid duplicates
+    $("#employeesList tr, #departmentList tr, #locationList tr").off('mouseenter mouseleave');
+
+    // Apply hover event based on the active tab
+    $('.nav-link.active').each(function() {
+        let activeTabId = $(this).attr('id');
+        let tableSelector;
+
+        switch (activeTabId) {
+            case 'employee-tab':
+                tableSelector = '#employeesList tr';
+                break;
+            case 'department-tab':
+                tableSelector = '#departmentList tr';
+                break;
+            case 'location-tab':
+                tableSelector = '#locationList tr';
+                break;
+        }
+
+        $(tableSelector).hover(function() {
+            let index = $(this).index() + 1; // Index is zero-based
+            let total = $(tableSelector).length;
+            $(".footer").text(`Record: ${index} of ${total}`);
+        }, function() {
+            let total = $(tableSelector).length;
+            $(".footer").text(`Record: 1 of ${total}`);
+        });
+    });
+};
+
+const bindHoverEvents = (tableSelector) => {
+    $(`${tableSelector} tr`).hover(function() {
+        let index = $(this).index() + 1; // Index is zero-based
+        let total = $(`${tableSelector} tr`).length;
+        $(".footer").text(`Record: ${index} of ${total}`);
+    }, function() {
+        let total = $(`${tableSelector} tr`).length;
+        $(".footer").text(`Record: 1 of ${total}`);
+    });
+};
+
+
+
+$(document).ready(() => {
+    const getAllEmployeeInfo = (updateInitialFooter) => {
         $.ajax({
             type: "POST",
             url: "libs/php/getAll.php",
@@ -341,10 +394,14 @@ document.getElementById('locationIcon').addEventListener('click', function() {
             complete: () => {
                 // Ensure that the table is populated only after the data is fetched
                 populateEmployeeData(searchableData["staff"]);
+                if (typeof updateInitialFooter === "function") {
+                    updateInitialFooter(); // Execute the callback function
+                }
             }
         });
     };
-    const getAllDepartmentInfo = () => {
+    
+    const getAllDepartmentInfo = (updateInitialFooter) => {
         $.ajax({
             type: "POST",
             url: "libs/php/getAllDepartments.php",
@@ -354,7 +411,6 @@ document.getElementById('locationIcon').addEventListener('click', function() {
                 if (code == "200") {
                     searchableData["department"] = response.data;
                     populateDepartmentData(response.data);
-                    updateInitialFooter();
                 }
             },
             error: (xhr, status, error) => {
@@ -364,11 +420,14 @@ document.getElementById('locationIcon').addEventListener('click', function() {
             complete: () => {
                 // Ensure that the table is populated only after the data is fetched
                 populateDepartmentData(searchableData["department"]);
+                if (typeof updateInitialFooter === "function") {
+                    updateInitialFooter(); // Execute the callback function
+                }
             }
         });
     };
     
-    const getAllLocationInfo = () => {
+    const getAllLocationInfo = (updateInitialFooter) => {
         $.ajax({
             type: "POST",
             url: "libs/php/getAllLocation.php",
@@ -378,7 +437,6 @@ document.getElementById('locationIcon').addEventListener('click', function() {
                 if (code == "200") {
                     searchableData["location"] = response.data;
                     populateLocationData(response.data);
-                    updateInitialFooter();
     
                     if (response.data.length > 0) {
                         // Get the select element
@@ -406,82 +464,104 @@ document.getElementById('locationIcon').addEventListener('click', function() {
             complete: () => {
                 // Ensure that the table is populated only after the data is fetched
                 populateLocationData(searchableData["location"]);
+                if (typeof updateInitialFooter === "function") {
+                    updateInitialFooter(); // Execute the callback function
+                }
             }
         });
     };
     
     
     // Example 1
-    const populateEmployeeData = (data) => {
-        $("#employeesList").empty();
-        let content = "";
-        for (let i = 0; i < data.length; i++) {
-            const employee = data[i];
-            content += `<tr data-index="${i + 1}">`;
+
+        const populateEmployeeData = (data) => {
+            let content = "";
+            // console.log("Populating employee data:", data); 
+            let tableBody = $("#employeesList");
+            tableBody.empty();
+            
+            for (let i = 0; i < data.length; i++) {
+                const employee = data[i];
+                content += `<tr data-index="${i + 1}">`;
             content += `<td class="listItem" title="${employee.firstName} ${employee.lastName}" data-bs-toggle data-bs-target="#readOnlyForm" data-id="${employee.id}">${employee.firstName} ${employee.lastName}</td>`;
-            content += `<td class="d-none d-sm-block">${employee.department}</td>`;
-            content += `<td>${employee.location}</td>`;
-            content += `<td style="text-align:center"><a href="#" class="editButtonPersonnel" data-id="${employee.id}">
+            content += `<td class="d-none d-sm-table-cell">${employee.department}</td>`;
+            content += `<td class="d-none d-sm-table-cell" >${employee.location}</td>`;
+            content += `<td class="w-12" style="text-align:center"><a href="#" class="editButtonPersonnel" data-id="${employee.id}">
             <img src="libs/css/images/edit.png" alt="Edit" class="editIcon">
         </a>`;
-            content += `<td style="text-align:center"><a href="#" class="deleteButtonPersonnel" data-id="${employee.id}"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon" data-id="${employee.id}"></td>`;
+            content += `<td class="w-12" style="text-align:center"><a href="#" class="deleteButtonPersonnel" data-id="${employee.id}"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon" data-id="${employee.id}"></td>`;
             content += `</tr>`;
-        }
-    
-        // Ensure that the #employeesList element exists
-        const employeesList = $("#employeesList");
-        updateFooterOnHover();
-        if (employeesList.length) {
-            employeesList.html(content);
-        } else {
-            console.error("#employeesList element not found!");
-        }
-    };
+            }
+        
+            tableBody.html(content);
+        
+            // console.log("Employee table updated. Current rows:", tableBody.children().length);
+            updateFooterOnHover();
+            updateInitialFooter();
+            bindHoverEvents("#employeeList")
+        };
+        
 
     const populateDepartmentData = (data) => {
+        // console.log("Populating department data:", data);
+        let tableBody = $("#departmentList");
+        tableBody.empty(); // Clear existing rows
+    
         let content = "";
         for (let i = 0; i < data.length; i++) {
             const department = data[i];
             let departmentName = department.department || department.name;
             content += `<tr data-index="${i + 1}">`;
-            content += `<td class="d-none d-sm-block">${departmentName}</td>`;
-            content += `<td>${department.location}</td>`;
-            content += `<td style="text-align:center"><a href="#" class="editButtonDepartment" data-id="${department.id}"><img src="libs/css/images/edit.png" alt="Edit" class="editIcon"></td>`;
-            content += `<td style="text-align:center"><a href="#" class="deleteButtonDepartment" data-id="${department.id}"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon"></td>`;
+            content += `<td class="listItem">${departmentName}</td>`;
+            content += `<td class="d-none d-sm-table-cell">${department.location}</td>`;
+            content += `<td class="w-12" style="text-align:center"><a href="#" class="editButtonDepartment" data-id="${department.id}"><img src="libs/css/images/edit.png" alt="Edit" class="editIcon"></td>`;
+            content += `<td class="w-12" style="text-align:center"><a href="#" class="deleteButtonDepartment" data-id="${department.id}"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon"></td>`;
             content += `</tr>`;
         }
     
-        // Ensure that the #employeesList element exists
-        const departmentList = $("#departmentList");
-        updateFooterOnHover();
-        updateFooterText();
-        if (departmentList.length) {
-            departmentList.html(content);
-        } else {
-            console.error("#employeesList element not found!");
-        }
+        // Append the generated content to the table body
+        tableBody.html(content);
+    
+        // console.log("Department table updated. Current rows:", tableBody.children().length); 
+    
+        // Update the footer after the table is populated
+            updateFooterOnHover();
+            updateInitialFooter();
+            bindHoverEvents('#departmentList')
     };
     
+        // // Ensure that the #employeesList element exists
+        // const departmentList = $("#departmentList");
+        // updateFooterOnHover();
+        // updateFooterText();
+        // if (departmentList.length) {
+        //     departmentList.html(content);
+        // } else {
+        //     console.error("#employeesList element not found!");
+        // }
+
+
     const populateLocationData = (data) => {
         let content = "";
+        // console.log("Populating location data:", data);
+        let tableBody = $("#locationList");
+        tableBody.empty();
+        
         for (let i = 0; i < data.length; i++) {
             const location = data[i];
             content += `<tr data-index="${i + 1}">`;
-            content += `<td class="d-none d-sm-block">${location.name}</td>`;
-            content += `<td style="text-align:center"><a href="#" class="editLocation" data-id="${location.id}"><img src="libs/css/images/edit.png" alt="Edit" class="editIcon""></td>`;
-            content += `<td style="text-align:center"><a href="#" class="deleteLocation" data-id="${location.id}"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon"></td>`;
+            content += `<td class="listItem">${location.name}</td>`;
+            content += `<td class="w-12" style="text-align:center"><a href="#" class="editLocation" data-id="${location.id}"><img src="libs/css/images/edit.png" alt="Edit" class="editIcon""></td>`;
+            content += `<td class="w-12" style="text-align:center"><a href="#" class="deleteLocation" data-id="${location.id}"><img src="libs/css/images/delete.png" alt="Delete" class="deleteIcon"></td>`;
             content += `</tr>`;
         }
     
-        // Ensure that the #employeesList element exists
-        const locationList = $("#locationList");
+        tableBody.html(content);
+    
+        // console.log("Location table updated. Current rows:", tableBody.children().length); 
         updateFooterOnHover();
-        updateFooterText();
-        if (locationList.length) {
-            locationList.html(content);
-        } else {
-            console.error("#employeesList element not found!");
-        }
+        updateInitialFooter();
+        bindHoverEvents('#locationList')
     };
 
     function addDepartment() {
@@ -542,8 +622,7 @@ document.getElementById('locationIcon').addEventListener('click', function() {
                     console.log('Response:', response);
                     if (response.status.code === "200") {
                         showAlertModal('success','Location added successfully!');
-                        // Reload location list (if needed)
-                        // You can perform additional actions here if needed
+                        getAllLocationInfo();
                     } else if (response.status.code === "400") {
                         showAlertModal('restrict','Failed to add location. Please try again.');
                     } else if (response.status.code === "1062") {
@@ -614,350 +693,213 @@ document.getElementById('locationIcon').addEventListener('click', function() {
             $('#addPersonnel').modal('hide');
         });
 
-       
-        const updateInitialFooter = () => {
-            let total = $(`#${activeTabId}Table tbody tr`).length;
-            $(".footer").text(`Record: 1 of ${total}`);
-        };
+        $(document).on('click', '.editButtonPersonnel', function(event) {
+            // Prevent the default link behavior
+            event.preventDefault();
         
-    
-
-        let activeTabId = "employee-tab"; // Declare globally
-        $(".nav-link").click(function () {
-            activeTabId = $(this).attr("id");
-            searchAll(''); // Clear the search results
-            $(".data-table").hide(); // Hide all tables
-            // Reset search bar
-    $('#searchBarSearch').val('');
-    fetchAllDataForTab(activeTabId);
-    currentSearchText = '';
-             if (activeTabId === "employee-tab") {
-                $("#employeesTable").show()
-            } else if (activeTabId === "department-tab") {
-                $("#departmentTable").show()
-            } else if (activeTabId === "location-tab") {
-                $("#locationTable").show()
+            // Retrieve the personnel ID from the data attribute
+            const personnelId = $(this).data('id');
+        
+        // AJAX request to get personnel data by ID
+        $.ajax({
+            type: "GET",
+            url: "libs/php/getPersonnelByID.php",
+            data: { id: Number(personnelId) },
+            dataType: "json",
+            success: (response) => {
+                if (response.status.code === "200") {
+                    const personnelData = response.data.personnel[0];
+        
+                    // Set values in the Edit Personnel Modal
+                    $('#edit-personnel-id').val(personnelData.id);
+                    $('#edit-lastName').val(personnelData.lastName);
+                    $('#edit-firstName').val(personnelData.firstName);
+                    $('#edit-email').val(personnelData.email);
+                    $('#edit-jobTitle').val(personnelData.jobTitle);
+        
+                    // Set selected option for department
+                    const departmentID = personnelData.departmentID;
+                    $('#allDepartments').val(departmentID);
+        
+                    // Open the Edit Personnel Modal using Bootstrap's modal method
+                    $('#editPersonnel').modal('show');
+                    
+                } else {
+                    showAlertModal('restrict','Failed to fetch personnel data. Please try again.');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Error during personnel data fetching:', textStatus, errorThrown);
             }
         });
-
-        function fetchAllDataForTab(tabId) {
-            // Define a promise that will resolve when the data is fetched and the DOM is updated
-            let dataFetchPromise;
         
-            if (tabId === "employee-tab") {
-                dataFetchPromise = getAllEmployeeInfo();
-            } else if (tabId === "department-tab") {
-                dataFetchPromise = getAllDepartmentInfo();
-            } else if (tabId === "location-tab") {
-                dataFetchPromise = getAllLocationInfo();
-            }
-        
-            // Wait for the promise to resolve, then update the footer
-            if (dataFetchPromise) {
-                dataFetchPromise.then(() => {
-                    updateInitialFooter();
-                });
-            }
-        }
-        
-
-        function searchAll(searchText) {
-            currentSearchText = searchText;
-            if (!activeTabId) {
-                console.error('Active tab not set.');
-                return;
-            }
-        
+        // Update personnel function
+        function updatePersonnel(personnelData) {
             $.ajax({
-                type: "GET",
-                url: "libs/php/SearchAll.php",
-                data: { txt: searchText, activeTab: activeTabId },
+                type: "POST",
+                url: "libs/php/updatePersonnel.php",
+                data: personnelData,
                 dataType: "json",
                 success: function (response) {
                     if (response.status.code === "200") {
-                        let found = response.data.found;
-        
-                        if (searchText.trim()) {
-                            if (activeTabId === "employee-tab") {
-                                populateEmployeeData(found);
-                            } else if (activeTabId === "department-tab") {
-                                populateDepartmentData(found);
-                            } else if (activeTabId === "location-tab") {
-                                populateLocationData(found);
-                            }
-                            updateFooterOnHover();
-                        }
+                        // Handle successful update
+                        showAlertModal('success','Personnel updated successfully!');
+                        getAllEmployeeInfo();
+                        $('#editPersonnel').modal('hide'); // Close the modal here
+                        searchAll(currentSearchText);
                     } else {
-                        console.log('Query failed:', response.status.description);
+                        // Handle error
+                        showAlertModal('restrict','Failed to update personnel. Please try again.');
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('Error during search:', textStatus, errorThrown);
+                    console.error('Error during personnel update:', textStatus, errorThrown, jqXHR);
+                },
+                
+                
+                complete: function () {
+                    // Additional actions, if needed
                 }
             });
         }
         
-        // Handle input event for search
-        $('#searchBarSearch').on('input', function () {
-            let searchText = $(this).val();
-            searchAll(searchText);
-            if (searchText.trim() === "") {
-                fetchAllDataForTab(activeTabId);
-                updateFooterOnHover();
-            }
+        // Event listener for update button click
+        $('#updatePersonnelButton').off('click').on('click', function () {
+            // Get updated personnel data from the form fields
+            const updatedData = {
+                id: $('#edit-personnel-id').val(),
+                lastName: $('#edit-lastName').val(),
+                firstName: $('#edit-firstName').val(),
+                email: $('#edit-email').val(),
+                jobTitle: $('#edit-jobTitle').val(),
+                departmentID: $('#allDepartments').val() // Assuming the department select field has an ID 'allDepartments'
+            };
+        
+            console.log('Updating personnel with data:', updatedData);
+            // Call the update function
+            updatePersonnel(updatedData);
+        
         });
-
-        // Function to open Edit Department Modal and load department data
-// Add an event listener for the "Edit Department" button click
-
-$(document).on('click', '.editButtonPersonnel', function(event) {
-    // Prevent the default link behavior
-    event.preventDefault();
-
-    // Retrieve the personnel ID from the data attribute
-    const personnelId = $(this).data('id');
-
-// AJAX request to get personnel data by ID
-$.ajax({
-    type: "GET",
-    url: "libs/php/getPersonnelByID.php",
-    data: { id: Number(personnelId) },
-    dataType: "json",
-    success: (response) => {
-        if (response.status.code === "200") {
-            const personnelData = response.data.personnel[0];
-
-            // Set values in the Edit Personnel Modal
-            $('#edit-personnel-id').val(personnelData.id);
-            $('#edit-lastName').val(personnelData.lastName);
-            $('#edit-firstName').val(personnelData.firstName);
-            $('#edit-email').val(personnelData.email);
-            $('#edit-jobTitle').val(personnelData.jobTitle);
-
-            // Set selected option for department
-            const departmentID = personnelData.departmentID;
-            $('#allDepartments').val(departmentID);
-
-            // Open the Edit Personnel Modal using Bootstrap's modal method
-            $('#editPersonnel').modal('show');
-            
-        } else {
-            showAlertModal('restrict','Failed to fetch personnel data. Please try again.');
-        }
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-        console.error('Error during personnel data fetching:', textStatus, errorThrown);
-    }
-});
-
-// Update personnel function
-function updatePersonnel(personnelData) {
-    $.ajax({
-        type: "POST",
-        url: "libs/php/updatePersonnel.php",
-        data: personnelData,
-        dataType: "json",
-        success: function (response) {
-            if (response.status.code === "200") {
-                // Handle successful update
-                showAlertModal('success','Personnel updated successfully!');
-                getAllEmployeeInfo();
-                $('#editPersonnel').modal('hide'); // Close the modal here
-                searchAll(currentSearchText);
-            } else {
-                // Handle error
-                showAlertModal('restrict','Failed to update personnel. Please try again.');
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error('Error during personnel update:', textStatus, errorThrown, jqXHR);
-        },
         
         
-        complete: function () {
-            // Additional actions, if needed
+        });
+        $(document).on('click', '.editButtonDepartment', function(event) {
+            event.preventDefault();
+            const departmentId = $(this).data('id');
+        
+            $.ajax({
+                type: "GET",
+                url: "libs/php/getDepartmentByID.php",
+                data: { id: departmentId },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status.code === "200") {
+                        const departmentData = response.data[0];
+                        $('#edit-department-id').val(departmentData.id);
+                        $('#edit-department-name').val(departmentData.name);
+                        // Assuming you have a select dropdown for location in your form
+                        $('#edit-department-location').val(departmentData.locationID);
+                        $('#editDepartment').modal('show');
+                    } else {
+                        showAlertModal('restrict','Failed to fetch department data. Please try again.');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error during department data fetching:', textStatus, errorThrown);
+                }
+            });
+        });
+        function updateDepartment(departmentData) {
+            $.ajax({
+                type: "POST",
+                url: "libs/php/updateDepartment.php",
+                data: departmentData,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status.code === "200") {
+                        showAlertModal('success','Department updated successfully!');
+                        getAllDepartmentInfo();
+                    } else {
+                        showAlertModal('restrict','Failed to update department. Please try again.');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error during department update:', textStatus, errorThrown);
+                }
+            });
         }
-    });
-}
-
-// Event listener for update button click
-$('#updatePersonnelButton').off('click').on('click', function () {
-    // Get updated personnel data from the form fields
-    const updatedData = {
-        id: $('#edit-personnel-id').val(),
-        lastName: $('#edit-lastName').val(),
-        firstName: $('#edit-firstName').val(),
-        email: $('#edit-email').val(),
-        jobTitle: $('#edit-jobTitle').val(),
-        departmentID: $('#allDepartments').val() // Assuming the department select field has an ID 'allDepartments'
-    };
-
-    console.log('Updating personnel with data:', updatedData);
-    // Call the update function
-    updatePersonnel(updatedData);
-
-});
-
-
-});
-$(document).on('click', '.editButtonDepartment', function(event) {
-    event.preventDefault();
-    const departmentId = $(this).data('id');
-
-    $.ajax({
-        type: "GET",
-        url: "libs/php/getDepartmentByID.php",
-        data: { id: departmentId },
-        dataType: "json",
-        success: function(response) {
-            if (response.status.code === "200") {
-                const departmentData = response.data[0];
-                $('#edit-department-id').val(departmentData.id);
-                $('#edit-department-name').val(departmentData.name);
-                // Assuming you have a select dropdown for location in your form
-                $('#edit-department-location').val(departmentData.locationID);
-                $('#editDepartment').modal('show');
-            } else {
-                showAlertModal('restrict','Failed to fetch department data. Please try again.');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error during department data fetching:', textStatus, errorThrown);
+        
+        $('#editDepForm').submit(function(event) {
+            event.preventDefault();
+            const updatedData = {
+                id: $('#edit-department-id').val(),
+                name: $('#edit-department-name').val(),
+                locationID: $('#edit-department-location').val()
+            };
+            updateDepartment(updatedData);
+            $('#editDepartment').modal('hide');
+        });
+        
+        $(document).on('click', '.editLocation', function(event) {
+            event.preventDefault();
+            const locationId = $(this).data('id');
+        
+            $.ajax({
+                type: "GET",
+                url: "libs/php/getLocationByID.php",
+                data: { id: locationId },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status.code === "200" && response.data.length > 0) {
+                        const locationData = response.data[0];
+                        $('#edit-location-id').val(locationData.id);
+                        $('#edit-location-name').val(locationData.name);
+        
+                        // Open the modal
+                        $('#editLocation').modal('show');
+                    } else {
+                        showAlertModal('restrict','Failed to fetch location data. Please try again.');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error during location data fetching:', textStatus, errorThrown);
+                }
+            });
+        });
+        
+        function updateLocation(locationData) {
+            $.ajax({
+                type: "POST",
+                url: "libs/php/updateLocation.php",
+                data: locationData,
+                dataType: "json",
+                success: function(response) {
+                    if (response.status.code === "200") {
+                        showAlertModal('success','Location updated successfully!');
+                        getAllLocationInfo();
+                        // You might want to refresh your location data on the page here
+                    } else {
+                        showAlertModal('restrict','Failed to update location. Please try again.');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error during location update:', textStatus, errorThrown);
+                }
+            });
         }
-    });
-});
-function updateDepartment(departmentData) {
-    $.ajax({
-        type: "POST",
-        url: "libs/php/updateDepartment.php",
-        data: departmentData,
-        dataType: "json",
-        success: function(response) {
-            if (response.status.code === "200") {
-                showAlertModal('success','Department updated successfully!');
-                getAllDepartmentInfo();
-            } else {
-                showAlertModal('restrict','Failed to update department. Please try again.');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error during department update:', textStatus, errorThrown);
-        }
-    });
-}
+        
+        $('#editLocationForm').submit(function(event) {
+            event.preventDefault();
+            const updatedData = {
+                id: $('#edit-location-id').val(),
+                name: $('#edit-location-name').val()
+            };
+            updateLocation(updatedData);
+            $('#editLocation').modal('hide');
+        });
+        
 
-$('#editDepForm').submit(function(event) {
-    event.preventDefault();
-    const updatedData = {
-        id: $('#edit-department-id').val(),
-        name: $('#edit-department-name').val(),
-        locationID: $('#edit-department-location').val()
-    };
-    updateDepartment(updatedData);
-    $('#editDepartment').modal('hide');
-});
-
-// $(document).on('click', '.editButtonDepartment', function(event) {
-//     event.preventDefault();
-//     const departmentId = $(this).data('id');
-//     console.log('Edit button clicked for department ID:', departmentId); // Debugging log
-
-//     $.ajax({
-//         type: "GET",
-//         url: "libs/php/getDepartmentByID.php",
-//         data: { id: departmentId },
-//         dataType: "json",
-//         success: function(response) {
-//             console.log('AJAX response:', response); // Debugging log
-//             if (response.status.code === "200") {
-//                 const departmentData = response.data[0];
-//                 $('#edit-department-id').val(departmentData.id);
-//                 $('#edit-department-name').val(departmentData.name);
-//                 $('#edit-department-location').val(departmentData.locationID);
-//                 $('#editDepartment').modal('show');
-//             } else {
-//                 alert('Failed to fetch department data. Please try again.');
-//             }
-//         },
-//         error: function(jqXHR, textStatus, errorThrown) {
-//             console.error('Error during department data fetching:', textStatus, errorThrown);
-//         }
-//     });
-// });
-
-
-
-// // Add an event listener for the Edit Department form submission
-// $('#editDepForm').submit(function (event) {
-//     // Prevent the default form submission behavior
-//     event.preventDefault();
-
-//     // Call the updateDepartment function (you need to implement this)
-//     updateDepartment();
-    
-//     // Close the Edit Department Modal
-//     $('#editDepartment').modal('hide');
-// });
-
-
-$(document).on('click', '.editLocation', function(event) {
-    event.preventDefault();
-    const locationId = $(this).data('id');
-
-    $.ajax({
-        type: "GET",
-        url: "libs/php/getLocationByID.php",
-        data: { id: locationId },
-        dataType: "json",
-        success: function(response) {
-            if (response.status.code === "200" && response.data.length > 0) {
-                const locationData = response.data[0];
-                $('#edit-location-id').val(locationData.id);
-                $('#edit-location-name').val(locationData.name);
-
-                // Open the modal
-                $('#editLocation').modal('show');
-            } else {
-                showAlertModal('restrict','Failed to fetch location data. Please try again.');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error during location data fetching:', textStatus, errorThrown);
-        }
-    });
-});
-
-function updateLocation(locationData) {
-    $.ajax({
-        type: "POST",
-        url: "libs/php/updateLocation.php",
-        data: locationData,
-        dataType: "json",
-        success: function(response) {
-            if (response.status.code === "200") {
-                showAlertModal('success','Location updated successfully!');
-                getAllLocationInfo();
-                // You might want to refresh your location data on the page here
-            } else {
-                showAlertModal('restrict','Failed to update location. Please try again.');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error during location update:', textStatus, errorThrown);
-        }
-    });
-}
-
-$('#editLocationForm').submit(function(event) {
-    event.preventDefault();
-    const updatedData = {
-        id: $('#edit-location-id').val(),
-        name: $('#edit-location-name').val()
-    };
-    updateLocation(updatedData);
-    $('#editLocation').modal('hide');
-});
-// Open the delete personnel modal
+        // Open the delete personnel modal
 $(document).on('click', '.deleteButtonPersonnel', function(event) {
     event.preventDefault();
     const personnelId = $(this).data('id');
@@ -1011,7 +953,6 @@ $('#deleteLocationForm').submit(function(event) {
     $('#deleteLocation').modal('hide');
 });
 
-// Your existing delete functions here...
 
 
 function deletePersonnel(id) {
@@ -1076,38 +1017,123 @@ function deleteLocation(id) {
         });
     }
 
+       
+        
+        let activeTabId = "employee-tab"; // Declare globally
+        $(".nav-link").click(function () {
+            activeTabId = $(this).attr("id");
+            searchAll(''); // Clear the search results
+            $(".data-table").hide(); // Hide all tables
+            // Reset search bar
+    $('#searchBarSearch').val('');
+    fetchAllDataForTab(activeTabId);
+    currentSearchText = '';
+             if (activeTabId === "employee-tab") {
+                $("#employeesTable").show()
+            } else if (activeTabId === "department-tab") {
+                $("#departmentTable").show()
+            } else if (activeTabId === "location-tab") {
+                $("#locationTable").show()
+            }
+        });
 
-const updateFooterOnHover = () => {
-    // Assuming your table rows have a 'data-index' attribute
-    $("#employeesList tr").hover(function() {
-        // Get the index of the hovered row
-        let index = $(this).data('index');
-        let total = $("#employeesList tr").length;
+        const updateInitialFooter = () => {
+            // Determine the active tab directly
+            let activeTab = $('.nav-link.active').attr('id');
+        
+            // Based on the active tab, select the correct table
+            let tableId;
+            switch (activeTab) {
+                case 'employee-tab':
+                    tableId = '#employeesList';
+                    break;
+                case 'department-tab':
+                    tableId = '#departmentList';
+                    break;
+                case 'location-tab':
+                    tableId = '#locationList';
+                    break;
+                default:
+                    console.log('Unknown active tab');
+                    return; // Exit the function if no known tab is active
+            }
+        
+            // Now, update the footer based on the selected table
+            let total = $(`${tableId} tr`).length;
+            // console.log(`Updating footer for ${activeTab}: ${total} rows found`); 
+            $(".footer").text(`Record: 1 of ${total}`);
+        };
+        
+        
 
-        // Update the footer text
-        $(".footer").text(`Record: ${index} of ${total}`);
-    }, function() {
-        // Optionally, reset the footer when not hovering over a row
-        $(".footer").text(`Record: 1 of ${$("#employeesList tr").length}`);
-    });
-};
+        const updateFooterText = () => {
+            // Update footer text based on the current number of rows in the active table
+            let total = $(`#${activeTabId}List tr`).length;
+            $(".footer").text(`Record: 1 of ${total}`);
+        };
+        
+        
+        
 
-const updateFooterText = () => {
-    // Update footer text based on the current number of rows in the active table
-    let total = $(`#${activeTabId}List tr`).length;
-    $(".footer").text(`Record: 1 of ${total}`);
-};
+        function fetchAllDataForTab(tabId) {
+        
+        
+            if (tabId === "employee-tab") {
+                getAllEmployeeInfo(updateInitialFooter);
+            } else if (tabId === "department-tab") {
+                getAllDepartmentInfo(updateInitialFooter);
+            } else if (tabId === "location-tab") {
+                getAllLocationInfo(updateInitialFooter);
+            }
+        
+        }
+        
 
-
-
-
-$(document).ready(() => {
-    // Initial load
-    
-    // function resetTable() {
-    //     // Implement logic to reset the table to its original state
-    //     // For example, reload all data or clear the table
-    //     getAllEmployeeInfo();
+        function searchAll(searchText) {
+            currentSearchText = searchText;
+            if (!activeTabId) {
+                console.error('Active tab not set.');
+                return;
+            }
+        
+            $.ajax({
+                type: "GET",
+                url: "libs/php/SearchAll.php",
+                data: { txt: searchText, activeTab: activeTabId },
+                dataType: "json",
+                success: function (response) {
+                    if (response.status.code === "200") {
+                        let found = response.data.found;
+        
+                        if (searchText.trim()) {
+                            if (activeTabId === "employee-tab") {
+                                populateEmployeeData(found);
+                            } else if (activeTabId === "department-tab") {
+                                populateDepartmentData(found);
+                            } else if (activeTabId === "location-tab") {
+                                populateLocationData(found);
+                            }
+                            updateFooterOnHover();
+                        }
+                    } else {
+                        console.log('Query failed:', response.status.description);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error during search:', textStatus, errorThrown);
+                }
+            });
+        }
+        
+        // Handle input event for search
+        $('#searchBarSearch').on('input', function () {
+            let searchText = $(this).val();
+            searchAll(searchText);
+            if (searchText.trim() === "") {
+                fetchAllDataForTab(activeTabId);
+                updateFooterOnHover();
+            }
+        });
 
 
     getAllEmployeeInfo();

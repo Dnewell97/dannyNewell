@@ -136,23 +136,24 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Department</th>
-                            <th>Location</th>
-                            <th width="8%" style="text-align:center">Edit</th>
-                            <th width="8%" style="text-align:center">Delete</th>
+                            <th class="d-none d-sm-table-cell">Department</th>
+                            <th class="d-none d-sm-table-cell">Location</th>
+                            <th width="50px" style="text-align:center">Edit</th> <!-- Set a fixed width -->
+                            <th width="50px" style="text-align:center">Del</th> <!-- Set a fixed width -->
                         </tr>
                     </thead>
                     <tbody id="employeesList"></tbody>
                 </table>
+                
             
                 <!-- Departments Table -->
                 <table id="departmentTable" class="data-table" style="display: none;">
                     <thead>
                         <tr>
                             <th>Department</th>
-                            <th>Location</th>
-                            <th width="8%" style="text-align:center">Edit</th>
-                            <th width="8%" style="text-align:center">Delete</th>
+                            <th class="d-none d-sm-table-cell">Location</th>
+                            <th width="50px" style="text-align:center">Edit</th>
+                            <th width="50px" style="text-align:center">Delete</th>
                         </tr>
                     </thead>
                     <tbody id="departmentList"></tbody>
@@ -163,8 +164,8 @@
                     <thead>
                         <tr>
                             <th>Location</th>
-                            <th width="8%" style="text-align:center">Edit</th>
-                            <th width="8%" style="text-align:center">Delete</th>
+                            <th width="50px" style="text-align:center">Edit</th>
+                            <th width="50px" style="text-align:center">Delete</th>
                         </tr>
                     </thead>
                     <tbody id="locationList"></tbody>

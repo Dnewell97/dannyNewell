@@ -187,14 +187,14 @@ body {
 #searchBarText {
     border: 1px solid #000;
     box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
-    width: 70px;
+    width: 100%;
     z-index: 1;
     position: absolute;
 }
 
 #searchBar input {
     height: 38px;
-    width: 500px;
+    width: 70%;
     z-index: 2;
     position: relative;
     margin-left: 75px;
@@ -257,11 +257,11 @@ td.check-cell {
 }
 
 /* Add this to your existing CSS */
-#scrollableTableContainer {
+/* #scrollableTableContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+} */
 
 .scroll-button {
     background-color: #C0C0C0;
@@ -280,7 +280,7 @@ td.check-cell {
 /* Ensure that table content doesn't extend beyond the table body */
 .table {
     width: 100%;
-    table-layout: fixed;
+    /* table-layout: fixed; */
 }
 
 table.interactive > tbody > tr {
@@ -319,7 +319,8 @@ table.interactive > tbody > tr {
     padding-bottom: 2px; /* Remove padding bottom */
     height: 70px;
     width: 100%;
-
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .nav.nav-tabs .nav-item {
@@ -332,6 +333,10 @@ table.interactive > tbody > tr {
     border-radius: 0; /* Remove curved edges */
     background-color: #c0c0c0; /* Grey background color */
     margin-top: -24px;
+    flex-grow: 1;
+    text-align: center;
+    text-overflow: ellipsis;   /* Add an ellipsis to text that's cut off */
+
 }
 
 .nav.nav-tabs .nav-link.active {
@@ -602,3 +607,64 @@ img {
     margin-right: 10px;
     height: 40px;
 }
+
+
+/* Ensure Edit and Delete are not hidden on small screens */
+@media (max-width: 575.98px) {
+    .data-table th, .data-table td {
+        min-width: 50px;
+        white-space: normal; /* Adjust if more space is needed */
+    }
+
+    .d-none.d-sm-table-cell {
+        display: none;
+    }
+
+    .editIcon, .deleteIcon {
+        display: inline-block; /* Ensure icons are always shown */
+    }
+    /* Ensure edit and delete columns have a minimum width */
+    .table th.edit, .table td.edit,
+    .table th.delete, .table td.delete {
+        min-width: 70px; /* Adjust the minimum width as needed */
+        text-align: center;
+    }
+    .data-table {
+        font-size: 16px; /* or smaller if necessary */
+    }
+
+    .nav.nav-tabs .nav-link {
+        padding: 5px; /* Reduce padding */ 
+        min-width: 50px; /* Adjust min-width as needed */
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 60px; 
+    }
+
+    #searchBar input {
+        width: 100%; /* Full width */
+        margin-left: 0; /* Reset margin left */
+    }
+    .title-content strong {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 80px; /* Adjust as needed */
+        display: inline-block; /* This will allow text-overflow to take effect */
+    }
+
+    .program-title-bar img{
+        display: none;
+    }
+    .title-content {
+        display: flex;
+        align-items: center; /* This centers items vertically */
+    }
+    .title-content img {
+        height: 20px; /* Adjust as needed */
+        width: auto; /* Maintain aspect ratio */
+        margin: 0%;
+    }
+}
+
