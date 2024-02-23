@@ -1,0 +1,670 @@
+/* Font Face */
+@font-face {
+    font-family: 'Windows';
+    src: url('fonts/windowsRegular.ttf') format('truetype');
+}
+
+/* Global Styles */
+body {
+    font-family: "Windows", sans-serif;
+    background-color: #00807F;
+    margin: 0;
+    padding: 20px;
+    font-size: 1.5em;
+}
+
+/* Taskbar Styles */
+#taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: #c0c0c0;
+    display: flex;
+    align-items: center;
+    box-shadow: 2px -2px 5px #000;
+    z-index: 1000;
+}
+
+#start-button {
+    cursor: pointer;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 10px;
+    background: #000080;
+    color: white;
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
+    text-align: center;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+#programTab {
+    background-color: #C0C0C0;
+    color: #000000;
+    padding: 2px 8px;
+    border: 1px solid #000;
+    border-bottom: none;
+    cursor: pointer;
+    font-size: 0.8em;
+    user-select: none;
+    height: 30px;
+    margin-left: 5px;
+    
+    /* Set default outer border styles */
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
+}
+
+#programTab:active {
+    /* Set outer border styles for clicked state */
+    box-shadow: inset -1px -1px 0 #ffffff88, inset 1px 1px 0 #00000088;
+}
+
+#programTab:active {
+    /* Set inner border styles for clicked state */
+    border: inset -2px -2px var(--button-face), inset 2px 2px var(--button-shadow);
+}
+
+
+#taskbar-right {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+#date-time-container {
+    padding: 2px 6px;
+    background: #c0c0c0;
+    color: black;
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
+    font-size: 0.7em;
+    height: 30px;
+}
+
+/* Start Menu Styles */
+#start-menu {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    width: 250px;
+    background: #c0c0c0;
+    padding: 10px;
+    box-shadow: 2px 2px 5px #000;
+    border: 1px solid #000;
+    z-index: 1000;
+}
+
+.menu-button {
+    padding: 5px 10px;
+    margin: 2px 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menu-button img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+}
+
+.menu-button:hover {
+    background-color: #051179;
+    color: white;
+}
+
+.modal-window {
+    background-color: #C0C0C0;
+    width: 300px;
+    padding: 10px;
+    margin: auto;
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+}
+.program-title-bar{
+    max-width: 25px;
+}
+.title-bar {
+    background: linear-gradient(to right, #051179, #0d7aca);
+    color: #FFFFFF;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+
+.title-left {
+    display: flex;
+    align-items: center;
+}
+
+.title-bar img {
+    max-width: 28px;
+    margin-bottom: 7px;
+    margin-left: 3px;
+}
+.title-bar strong {
+    margin-left: 10px; /* Adjust the spacing between the icon and the text */
+    text-align: left;
+}
+
+.title-bar-controls {
+    display: flex;
+}
+
+.title-bar-controls button {
+    cursor: pointer;
+    padding: 2px 5px;
+    background: #C0C0C0;
+    border: 1px solid black;
+    max-width: 23px;
+    max-height: 23px;
+    text-align: center;
+    font-size: 0.7em;
+    font-weight: bold;
+    justify-content: right;
+    margin: 1px;
+}
+#searchBar {
+    background-color: #C0C0C0;
+    height: 38px;
+    position: relative;
+}
+
+#searchBarText {
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
+    width: 100%;
+    z-index: 1;
+    position: absolute;
+}
+
+#searchBar input {
+    height: 38px;
+    width: 70%;
+    z-index: 2;
+    position: relative;
+    margin-left: 75px;
+    box-shadow: inset 1px 1px 0 #ffffff88, inset -1px -1px 0 #00000088;
+}
+
+
+
+/* Form Styles */
+.form-group {
+    margin: 10px 0;
+}
+
+.form-group label {
+    display: block;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.buttons {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.buttons button {
+    margin-left: 10px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    font-size: 20px;
+    background: #FFFFFF;
+    border: #C0C0C0;
+}
+
+#employeesTable tbody tr:hover td {
+    background-color: #051179;
+    color: #FFFFFF;
+}
+
+td.check-cell {
+    background: #C0C0C0;
+    font-size: 1em;
+    /* text-align: center; */
+}
+
+.check-cell::before {
+    content: "□";
+}
+
+.footer {
+    padding: 5px;
+    text-align: right;
+    background: #C0C0C0;
+}
+
+/* Add this to your existing CSS */
+/* #scrollableTableContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+} */
+
+.scroll-button {
+    background-color: #C0C0C0;
+    color: black;
+    border: 1px solid #000;
+    margin: 5px;
+    cursor: pointer;
+}
+
+/* Add this to your existing CSS */
+.scrollable-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Ensure that table content doesn't extend beyond the table body */
+.table {
+    width: 100%;
+    /* table-layout: fixed; */
+}
+
+table.interactive > tbody > tr {
+    cursor: pointer;
+  }
+
+/* .table th, .table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+} */
+
+/* Add these styles to your existing CSS */
+.table-container {
+    height: 400px;
+    overflow-y: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* flex-grow: 1; */
+    background-color: white;
+}
+.table-container.larger {
+    height: 500px;
+    /* overflow-y: auto; */
+
+}
+.nav.nav-tabs {
+    background-color: #C0C0C0; /* Grey background color */
+    border: none; /* Remove default borders */
+    border-radius: 0; /* Remove curved edges */
+    margin-top: 0px; /* Adjust the negative margin to reduce the gap */
+    margin-bottom: -25px; /* Remove margin bottom */
+    padding-bottom: 2px; /* Remove padding bottom */
+    height: 70px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.nav.nav-tabs .nav-item {
+    margin-bottom: 0; /* Remove default margin */
+}
+
+.nav.nav-tabs .nav-link {
+    color: #000; /* Set text color */
+    border: none; /* Remove default borders */
+    border-radius: 0; /* Remove curved edges */
+    background-color: #c0c0c0; /* Grey background color */
+    margin-top: -24px;
+    flex-grow: 1;
+    text-align: center;
+    text-overflow: ellipsis;   /* Add an ellipsis to text that's cut off */
+
+}
+
+.nav.nav-tabs .nav-link.active {
+    color: #fff; /* Set active text color */
+    background-color: #051179; /* Active background color */
+}
+
+
+/* Styling for Windows 98-like Table */
+.data-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid #C0C0C0;
+    padding: 8px;
+}
+
+.data-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+}
+
+.data-table tbody tr:hover {
+    background-color: #051179;
+    color: #FFFFFF;
+    z-index: 1;
+}
+
+.data-table tbody tr {
+    height: 40px!important;
+}
+
+.data-table td.check-cell {
+    font-size: 1em;
+}
+
+.check-cell::before {
+    content: "□";
+}
+
+
+
+/* Add this to your existing CSS */
+.edit-bar {
+    background: #C0C0C0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+}
+
+.edit-button {
+    cursor: pointer;
+    height: 100%;
+    background: #C0C0C0;
+    border: none;
+    color: black;
+    font-size: 1em;
+}
+
+.edit-menu {
+    display: none;
+    position: absolute;
+    background: #C0C0C0;
+    border: 1px solid #000;
+    box-shadow: 2px 2px 5px #000;
+    z-index: 1002;
+}
+
+.edit-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    text-align: left;
+    border: none;
+    background: none;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.edit-menu button:hover {
+    background-color: #080808;
+    color: white;
+}
+
+/* Common styles for all icon containers */
+.icon-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid #00807F;
+    font-weight: bolder;
+    text-align: center;
+    color: white;
+}
+
+.icon-container:hover {
+    background-color: #051179;
+    color: #FFFFFF;
+}
+
+/* Additional styles specific to icon-common class */
+.icon-common {
+    font-size: 1 !important;
+    color: white;
+}
+
+.icon-3{
+    left: 12px !important;
+}
+#personnelIcon {
+    top: 200px;
+}
+
+#departmentIcon {
+    top: 320px;
+}
+
+#locationIcon {
+    top: 440px;
+}
+
+img {
+    max-width: 100px;
+}
+
+/* Add this to your existing CSS */
+#companyDirectory {
+    position: fixed;
+    top: 20px;
+    left: 150px;
+    display: none;
+    /* Your existing styles for the company directory window */
+}
+
+#companyDirectoryTable {
+    /* Set a fixed height for the table to enable scrolling */
+    max-height: 300px; /* Adjust the height as needed */
+
+    /* Add the custom scrollbar styles */
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--button-face) var(--button-shadow); /* Firefox */
+}
+
+.editIcon {
+    max-height: 20px;
+    text-align: right;
+}
+
+.deleteIcon {
+    max-height: 20px;
+    text-align: right !important;
+}
+
+/* Remove rounded corners */
+.modal-content {
+    border-radius: 0; 
+  }
+  
+  /* Window header */
+  .modal-header {
+    background: linear-gradient(to right, #051179, #0d7aca);
+    color: #FFFFFF;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    border-radius: 0;
+  }
+  
+  .modal-header button{
+    cursor: pointer;
+    padding: 2px 5px;
+    background: #C0C0C0;
+    border: 1px solid black;
+    max-width: 23px;
+    max-height: 23px;
+    text-align: center;
+    font-size: 0.7em;
+    font-weight: bold;
+    justify-content: right;
+    margin: 1px;
+  }
+  
+  /* Modal body */
+  .modal-body {
+    background-color: #c0c0c0;
+    color: #000000;
+    border-bottom: none;
+  }
+
+  .modal-footer {
+        background-color: #c0c0c0;
+        color: #000000;
+        border-radius: 0;
+        border-top: 0;
+  }
+  
+  /* Form elements */
+  .form-control,
+  .btn {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  /* Submit button */
+  .btn-outline-info {
+    background: #C0C0C0;
+    color: #000000;
+    border-color: #000000;
+  }
+  
+  #alertImage {
+    float:left; 
+    margin-right: 10px;
+    display: none; 
+    height: 40px;
+  }
+/* Adjust the modal body to use flex display to align items in the center */
+#alertModalBody {
+    display: flex;
+    align-items: center; /* This centers items vertically */
+}
+
+/* Adjust the line-height or margin of the alert text to lower it relative to the image */
+#alertModalText {
+    margin-top: 8px; /* Adjust as needed to lower the text */
+    display: inline-block;
+    vertical-align: middle; /* Aligns text vertically */
+}
+
+/* Remove rounded corners from the modal */
+.modal-content {
+    border-radius: 0; /* This removes the rounded corners */
+}
+
+/* Adjust the close button position */
+.modal-header .btn-close {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+}
+
+/* You might also need to adjust the padding of the modal-header to ensure proper alignment */
+.modal-header {
+    padding: 1rem 1rem 1rem 1rem; /* Adjust the right padding as needed */
+}
+
+#warningImage {
+    float:left; 
+    margin-right: 10px;
+    height: 40px;
+}
+
+
+/* Ensure Edit and Delete are not hidden on small screens */
+@media (max-width: 575.98px) {
+    .data-table th, .data-table td {
+        min-width: 50px;
+        white-space: normal; /* Adjust if more space is needed */
+    }
+
+    .d-none.d-sm-table-cell {
+        display: none;
+    }
+
+    .editIcon, .deleteIcon {
+        display: inline-block; /* Ensure icons are always shown */
+    }
+    /* Ensure edit and delete columns have a minimum width */
+    .table th.edit, .table td.edit,
+    .table th.delete, .table td.delete {
+        min-width: 70px; /* Adjust the minimum width as needed */
+        text-align: center;
+    }
+    .data-table {
+        font-size: 16px; /* or smaller if necessary */
+    }
+
+    .nav.nav-tabs .nav-link {
+        padding: 5px; /* Reduce padding */ 
+        min-width: 50px; /* Adjust min-width as needed */
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 60px; 
+    }
+
+    #searchBar input {
+        width: 100%; /* Full width */
+        margin-left: 0; /* Reset margin left */
+    }
+    .title-content strong {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 80px; /* Adjust as needed */
+        display: inline-block; /* This will allow text-overflow to take effect */
+    }
+
+    .program-title-bar img{
+        display: none;
+    }
+    .title-content {
+        display: flex;
+        align-items: center; /* This centers items vertically */
+    }
+    .title-content img {
+        height: 20px; /* Adjust as needed */
+        width: auto; /* Maintain aspect ratio */
+        margin: 0%;
+    }
+}
+
