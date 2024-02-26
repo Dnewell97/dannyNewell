@@ -27,12 +27,12 @@
         exit;
     }
 
-    $id = $_POST['id'];
-    $first_name = $_POST['firstName'];
-    $last_name = $_POST['lastName'];
-    $job_title = $_POST['jobTitle'];
-    $email = $_POST['email'];
-    $dept_id = $_POST['departmentID'];
+    $id = $_REQUEST['id'];
+    $first_name = $_REQUEST['firstName'];
+    $last_name = $_REQUEST['lastName'];
+    $job_title = $_REQUEST['jobTitle'];
+    $email = $_REQUEST['email'];
+    $dept_id = $_REQUEST['departmentID'];
 
     if (empty($id) || empty($first_name) || empty($last_name) || empty($email) || empty($dept_id)) {
         $output = [

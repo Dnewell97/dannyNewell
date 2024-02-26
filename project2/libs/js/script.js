@@ -7,7 +7,6 @@ let startButton = document.getElementById('start-button');
 let startMenu = document.getElementById('start-menu');
 let programTab;
 let currentSearchText = '';
-
 const hideIcons = () => {
     personnelIcon.style.display = 'none';
     locationIcon.style.display = 'none';
@@ -389,7 +388,6 @@ $(document).ready(() => {
             },
             error: (xhr, status, error) => {
                 console.error("Error fetching data:", error);
-                generateToast("Could not load employee data", "red");
             },
             complete: () => {
                 // Ensure that the table is populated only after the data is fetched
@@ -655,7 +653,7 @@ $(document).ready(() => {
             const lastName = $('#add-lastName').val();
             const jobTitle = $('#add-jobTitle').val();
             const email = $('#add-email').val();
-            const departmentID = $('#add-departments').val();
+            const departmentID = $('#allDepartments').val();
         
             // AJAX request to insertPersonnel.php
             $.ajax({
@@ -693,136 +691,148 @@ $(document).ready(() => {
             $('#addPersonnel').modal('hide');
         });
 
-        $(document).on('click', '.editButtonPersonnel', function(event) {
-            // Prevent the default link behavior
-            event.preventDefault();
-        
-            // Retrieve the personnel ID from the data attribute
-            const personnelId = $(this).data('id');
-        
-        // AJAX request to get personnel data by ID
-        $.ajax({
-            type: "GET",
-            url: "libs/php/getPersonnelByID.php",
-            data: { id: Number(personnelId) },
-            dataType: "json",
-            success: (response) => {
-                if (response.status.code === "200") {
-                    const personnelData = response.data.personnel[0];
-        
-                    // Set values in the Edit Personnel Modal
-                    $('#edit-personnel-id').val(personnelData.id);
-                    $('#edit-lastName').val(personnelData.lastName);
-                    $('#edit-firstName').val(personnelData.firstName);
-                    $('#edit-email').val(personnelData.email);
-                    $('#edit-jobTitle').val(personnelData.jobTitle);
-        
-                    // Set selected option for department
-                    const departmentID = personnelData.departmentID;
-                    $('#allDepartments').val(departmentID);
-        
-                    // Open the Edit Personnel Modal using Bootstrap's modal method
-                    $('#editPersonnel').modal('show');
-                    
-                } else {
-                    showAlertModal('restrict','Failed to fetch personnel data. Please try again.');
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('Error during personnel data fetching:', textStatus, errorThrown);
+// AJAX call to get personnel data by ID and populate the edit modal
+$(document).on('click', '.editButtonPersonnel', function(event) {
+    event.preventDefault();
+    const personnelId = $(this).data('id');
+
+    $.ajax({
+        type: "GET",
+        url: "libs/php/getPersonnelByID.php",
+        data: { id: Number(personnelId) },
+        dataType: "json",
+        success: (response) => {
+            if (response.status.code === "200") {
+                const personnelData = response.data.personnel[0];
+
+                // Populate the Edit Personnel Modal
+                $('#edit-personnel-id').val(personnelData.id);
+                $('#edit-lastName').val(personnelData.lastName);
+                $('#edit-firstName').val(personnelData.firstName);
+                $('#edit-email').val(personnelData.email);
+                $('#edit-jobTitle').val(personnelData.jobTitle);
+                $('#allDepartments').val(personnelData.departmentID); // Correct the ID here
+
+                $('#editPersonnel').modal('show');
+            } else {
+                showAlertModal('restrict','Failed to fetch personnel data. Please try again.');
             }
-        });
-        
-        // Update personnel function
-        function updatePersonnel(personnelData) {
-            $.ajax({
-                type: "POST",
-                url: "libs/php/updatePersonnel.php",
-                data: personnelData,
-                dataType: "json",
-                success: function (response) {
-                    if (response.status.code === "200") {
-                        // Handle successful update
-                        showAlertModal('success','Personnel updated successfully!');
-                        getAllEmployeeInfo();
-                        $('#editPersonnel').modal('hide'); // Close the modal here
-                        searchAll(currentSearchText);
-                    } else {
-                        // Handle error
-                        showAlertModal('restrict','Failed to update personnel. Please try again.');
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('Error during personnel update:', textStatus, errorThrown, jqXHR);
-                },
-                
-                
-                complete: function () {
-                    // Additional actions, if needed
-                }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Error during personnel data fetching:', textStatus, errorThrown);
+        }
+    });
+});
+
+// Update personnel function
+function updatePersonnel(updatedData) {
+    $.ajax({
+        type: "GET",
+        url: "libs/php/updatePersonnel.php",
+        data: updatedData,
+        dataType: "json",
+        success: function (response) {
+            if (response.status.code === "200") {
+                showAlertModal('success','Personnel updated successfully!');
+                $('#editPersonnel').modal('hide');
+            } else {
+                showAlertModal('restrict','Failed to update personnel. Please try again.');
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('AJAX Error', {
+                textStatus: textStatus,
+                errorThrown: errorThrown,
+                jqXHR: jqXHR
             });
         }
-        
-        // Event listener for update button click
-        $('#updatePersonnelButton').off('click').on('click', function () {
-            // Get updated personnel data from the form fields
-            const updatedData = {
-                id: $('#edit-personnel-id').val(),
-                lastName: $('#edit-lastName').val(),
-                firstName: $('#edit-firstName').val(),
-                email: $('#edit-email').val(),
-                jobTitle: $('#edit-jobTitle').val(),
-                departmentID: $('#allDepartments').val() // Assuming the department select field has an ID 'allDepartments'
-            };
-        
-            console.log('Updating personnel with data:', updatedData);
-            // Call the update function
-            updatePersonnel(updatedData);
-        
+    });
+}
+
+// Bind to form submit instead of button click
+$('#editPersonnelForm').submit(function (event) {
+    event.preventDefault();
+
+    const updatedData = {
+        id: $('#edit-personnel-id').val(),
+        lastName: $('#edit-lastName').val(),
+        firstName: $('#edit-firstName').val(),
+        email: $('#edit-email').val(),
+        jobTitle: $('#edit-jobTitle').val(),
+        departmentID: $('#allDepartments').val() // Correct the ID here
+    };
+    console.log('Sending data:', updatedData);
+
+    updatePersonnel(updatedData);
+});
+$(document).on('click', '.editButtonDepartment', function(event) {
+    event.preventDefault();
+
+    // Using jQuery to retrieve the data-id attribute
+    const departmentId = $(this).data('id');
+    console.log("Clicked Department ID:", departmentId);
+
+    if (departmentId) {
+        $.ajax({
+            type: "GET",
+            url: "libs/php/getDepartmentByID.php",
+            data: { id: Number(departmentId) },
+            dataType: "json",
+            success: function(response) {
+                // Process the response...
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error during department data fetching:', textStatus, errorThrown);
+            }
         });
+    } else {
+        console.error('Department ID is undefined.');
+    }
+});
+
+        // $(document).on('click', '.editButtonDepartment', function(event) {
+        //     event.preventDefault();
+        //     const departmentId = $(this).data('id');
+        //     console.log("Department ID:", departmentId);
         
-        
-        });
-        $(document).on('click', '.editButtonDepartment', function(event) {
-            event.preventDefault();
-            const departmentId = $(this).data('id');
-        
-            $.ajax({
-                type: "GET",
-                url: "libs/php/getDepartmentByID.php",
-                data: { id: departmentId },
-                dataType: "json",
-                success: function(response) {
-                    if (response.status.code === "200") {
-                        const departmentData = response.data[0];
-                        $('#edit-department-id').val(departmentData.id);
-                        $('#edit-department-name').val(departmentData.name);
-                        // Assuming you have a select dropdown for location in your form
-                        $('#edit-department-location').val(departmentData.locationID);
-                        $('#editDepartment').modal('show');
-                    } else {
-                        showAlertModal('restrict','Failed to fetch department data. Please try again.');
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('Error during department data fetching:', textStatus, errorThrown);
-                }
-            });
-        });
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "libs/php/getDepartmentByID.php",
+        //         data: { id: departmentId },
+        //         dataType: "json",
+        //         success: function(response) {
+        //             if (response.status.code === "200") {
+        //                 const departmentData = response.data[0];
+        //                 $('#edit-department-id').val(departmentData.id);
+        //                 $('#edit-department-name').val(departmentData.name);
+        //                 $('#edit-department-location').val(departmentData.locationID);
+        //                 $('#editDepartment').modal('show');
+        //             } else {
+        //                 showAlertModal('restrict','Failed to fetch department data. Please try again.');
+        //             }
+        //         },
+        //         error: function(jqXHR, textStatus, errorThrown) {
+        //             console.error('Error during department data fetching:', textStatus, errorThrown);
+        //         }
+        //     });
+        // });
         function updateDepartment(departmentData) {
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: "libs/php/updateDepartment.php",
                 data: departmentData,
                 dataType: "json",
                 success: function(response) {
-                    if (response.status.code === "200") {
-                        showAlertModal('success','Department updated successfully!');
-                        getAllDepartmentInfo();
-                    } else {
-                        showAlertModal('restrict','Failed to update department. Please try again.');
-                    }
-                },
+                    console.log(response);
+                        if (response.status.code === "200") {
+                            showAlertModal('success', 'Department updated successfully!');
+                            getAllDepartmentInfo();
+                        } else if (response.status.code === "409") {
+                            showAlertModal('restrict', 'Department with this name already exists.');
+                        } else {
+                            showAlertModal('restrict', 'Failed to update department. Please try again.');
+                        }
+                    },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error('Error during department update:', textStatus, errorThrown);
                 }
@@ -1066,11 +1076,11 @@ function deleteLocation(id) {
         
         
 
-        const updateFooterText = () => {
-            // Update footer text based on the current number of rows in the active table
-            let total = $(`#${activeTabId}List tr`).length;
-            $(".footer").text(`Record: 1 of ${total}`);
-        };
+        // const updateFooterText = () => {
+        //     // Update footer text based on the current number of rows in the active table
+        //     let total = $(`#${activeTabId}List tr`).length;
+        //     $(".footer").text(`Record: 1 of ${total}`);
+        // };
         
         
         

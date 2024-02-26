@@ -39,7 +39,12 @@
 
 	$query->bind_param("i", $_REQUEST['id']);
 
-	$query->execute();
+	if (!$query->execute()) {
+		// Log SQL errors
+		error_log("SQL Error: " . mysqli_error($conn));
+		// Rest of your code...
+	}
+	
 	
 	if (false === $query) {
 
