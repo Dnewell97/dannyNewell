@@ -2,9 +2,6 @@
     // Example use from browser:
     // http://localhost/companydirectory/libs/php/getLocationByID.php?id=<id>
 
-    // Remove next two lines for production
-    ini_set('display_errors', 'On');
-    error_reporting(E_ALL);
 
     $executionStartTime = microtime(true);
 
@@ -30,7 +27,6 @@
         exit;
     }
 
-    // Prepare and execute the SQL statement
     $query = $conn->prepare('SELECT id, name FROM location WHERE id = ?');
     $query->bind_param("i", $_REQUEST['id']);
     $query->execute();

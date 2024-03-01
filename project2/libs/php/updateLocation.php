@@ -2,13 +2,8 @@
     // Example use from browser:
     // http://localhost/companydirectory/libs/php/updateLocation.php?id=<id>&name=<name>
 
-    // Remove next two lines for production
-    ini_set('display_errors', 'On');
-    error_reporting(E_ALL);
-
     $executionStartTime = microtime(true);
 
-    // This includes the login details
     include("config.php");
 
     header('Content-Type: application/json; charset=UTF-8');
@@ -16,7 +11,6 @@
     $conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname, $cd_port, $cd_socket);
 
     if (mysqli_connect_errno()) {
-        // Handle connection error
         $output = [
             'status' => [
                 'code' => "300",
@@ -35,7 +29,6 @@
     $id = $_POST['id'];
     $name = $_POST['name'];
 
-    // Check if any inputs are empty
     if (empty($id) || empty($name)) {
         $output = [
             'status' => [
@@ -52,11 +45,9 @@
         exit;
     }
 
-    // Prepare and bind
     $query = $conn->prepare('UPDATE location SET name=? WHERE id=?');
     $query->bind_param("si", $name, $id);
 
-    // Execute the query
     if ($query->execute()) {
         $output = [
             'status' => [

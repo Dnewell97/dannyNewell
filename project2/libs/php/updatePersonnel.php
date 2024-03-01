@@ -1,7 +1,4 @@
 <?php
-    // Remove the next two lines for production
-    ini_set('display_errors', 'On');
-    error_reporting(E_ALL);
 
     $executionStartTime = microtime(true);
 
@@ -50,7 +47,6 @@
         exit;
     }
 
-    // Check for duplicate entries
     $query_check = $conn->prepare('SELECT * FROM personnel WHERE firstName = ? AND lastName = ? AND jobTitle = ? AND email = ? AND departmentID = ? AND id != ?');
     $query_check->bind_param("ssssii", $first_name, $last_name, $job_title, $email, $dept_id, $id);
     $query_check->execute();
@@ -72,7 +68,6 @@
         exit;
     }
 
-    // Update personnel
     $query = $conn->prepare('UPDATE personnel SET firstName=?, lastName=?, jobTitle=?, email=?, departmentID=? WHERE id=?');
     $query->bind_param("ssssii", $first_name, $last_name, $job_title, $email, $dept_id, $id);
 

@@ -3,10 +3,6 @@
 	// example use from browser
 	// http://localhost/companydirectory/libs/php/getDepartmentByID.php?id=<id>
 
-	// remove next two lines for production	
-
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true);
 
@@ -40,9 +36,7 @@
 	$query->bind_param("i", $_REQUEST['id']);
 
 	if (!$query->execute()) {
-		// Log SQL errors
 		error_log("SQL Error: " . mysqli_error($conn));
-		// Rest of your code...
 	}
 	
 	

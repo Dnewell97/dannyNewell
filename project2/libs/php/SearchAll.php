@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 'On');
-error_reporting(E_ALL);
-
 $executionStartTime = microtime(true);
 
 include("config.php");
@@ -29,11 +26,11 @@ $likeText = isset($_REQUEST['txt']) ? "%" . $_REQUEST['txt'] . "%" : "";
 if ($activeTab === 'employee-tab') {
     $query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.firstName LIKE ? OR p.lastName LIKE ? OR p.email LIKE ? OR p.jobTitle LIKE ? OR d.name LIKE ? OR l.name LIKE ? ORDER BY p.lastName, p.firstName, d.name, l.name';
 } elseif ($activeTab === 'department-tab') {
-    $query = 'SELECT d.name as department, l.name as location FROM department d LEFT JOIN location l ON (l.id = d.locationID) WHERE d.name LIKE ? OR l.name LIKE ? ORDER BY d.name, l.name';
+    $query = 'SELECT d.id, d.name as department, l.name as location FROM department d LEFT JOIN location l ON (l.id = d.locationID) WHERE d.name LIKE ? OR l.name LIKE ? ORDER BY d.name, l.name';
 } elseif ($activeTab === 'location-tab') {
-    $query = 'SELECT name FROM location WHERE name LIKE ? ORDER BY name';
+    $query = 'SELECT l.id, l.name FROM location l WHERE l.name LIKE ? ORDER BY l.name'; 
 } else {
-    $query = ''; // Ensure query is not empty for other cases
+    $query = ''; 
 }
 
 $stmt = $conn->prepare($query);

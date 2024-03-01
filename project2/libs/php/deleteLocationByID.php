@@ -1,8 +1,6 @@
 <?php
     // http://localhost/companydirectory/libs/php/deleteLocationByID.php?id=<id>
 
-    ini_set('display_errors', 'On');
-    error_reporting(E_ALL);
 
     $executionStartTime = microtime(true);
 

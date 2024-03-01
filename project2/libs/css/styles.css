@@ -442,9 +442,9 @@ table.interactive > tbody > tr {
     cursor: pointer;
     padding: 10px;
     border: 2px solid #00807F;
-    font-weight: bolder;
     text-align: center;
     color: white;
+    font-weight: lighter !important;
 }
 
 .icon-container:hover {
