@@ -139,6 +139,37 @@ populateLocationSelectElements();
         });
     });
 
+    const updateFooterOnHover = () => {
+        // First, remove any existing hover events to avoid duplicates
+        $("#employeesList tr, #departmentList tr, #locationList tr").off('mouseenter mouseleave');
+    
+        // Apply hover event based on the active tab
+        $('.nav-link.active').each(function() {
+            let activeTabId = $(this).attr('id');
+            let tableSelector;
+    
+            switch (activeTabId) {
+                case 'employee-tab':
+                    tableSelector = '#employeesList tr';
+                    break;
+                case 'department-tab':
+                    tableSelector = '#departmentList tr';
+                    break;
+                case 'location-tab':
+                    tableSelector = '#locationList tr';
+                    break;
+            }
+    
+            $(tableSelector).hover(function() {
+                let index = $(this).index() + 1; // Index is zero-based
+                let total = $(tableSelector).length;
+                $(".footer").text(`Record: ${index} of ${total}`);
+            }, function() {
+                let total = $(tableSelector).length;
+                $(".footer").text(`Record: 1 of ${total}`);
+            });
+        });
+    };
 
 const bindHoverEvents = (tableSelector) => {
     $(`${tableSelector} tr`).hover(function() {
@@ -260,6 +291,7 @@ $(document).ready(() => {
         }
         tableBody.html(content);
         // console.log("Employee table updated. Current rows:", tableBody.children().length);
+        updateFooterOnHover();
         bindHoverEvents("#employeesList")
     };
 
@@ -282,6 +314,7 @@ $(document).ready(() => {
         }
 
         tableBody.html(content);
+        updateFooterOnHover();
         bindHoverEvents('#departmentList');
     };
 
@@ -301,6 +334,7 @@ $(document).ready(() => {
         }
         tableBody.html(content);
         // console.log("Location table updated. Current rows:", tableBody.children().length); 
+        updateFooterOnHover();
         bindHoverEvents('#locationList')
     };
 
@@ -859,6 +893,7 @@ $(document).ready(() => {
                         } else if (activeTabId === "location-tab") {
                             populateLocationData(found);
                         }
+                        updateFooterOnHover();
                     }
                 } else {
                     // console.log('Query failed:', response.status.description);
@@ -876,6 +911,7 @@ $(document).ready(() => {
         searchAll(searchText);
         if (searchText.trim() === "") {
             fetchAllDataForTab(activeTabId);
+            updateFooterOnHover();
         }
     });
 
