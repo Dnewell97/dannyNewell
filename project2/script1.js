@@ -36,6 +36,7 @@ const populateDepartmentSelectElements = () => {
     });
 };
 
+populateDepartmentSelectElements();
 
 
 const populateSelectOptions = (selectElementId, departments) => {
@@ -50,6 +51,7 @@ const populateSelectOptions = (selectElementId, departments) => {
     });
 };
 
+populateDepartmentSelectElements()
 
 const populateLocationSelectElements = () => {
     $.ajax({
@@ -86,6 +88,7 @@ const populateLocationSelectElements = () => {
     });
 };
 
+populateLocationSelectElements();
 
 $('#addButton').on('click', function() {
     var activeTab = $('.nav-link.active').attr('id');
@@ -124,11 +127,60 @@ $('#addButton').on('click', function() {
                 break;
         }
 
+        $(tableSelector).hover(function() {
+            let index = $(this).index() + 1; // Index is zero-based
+            let total = $(tableSelector).length;
+            $(".footer").text(`Record: ${index} of ${total}`);
+        }, function() {
+            let total = $(tableSelector).length;
+            $(".footer").text(`Record: 1 of ${total}`);
+        });
     });
 
+    const updateFooterOnHover = () => {
+        // First, remove any existing hover events to avoid duplicates
+        $("#employeesList tr, #departmentList tr, #locationList tr").off('mouseenter mouseleave');
+    
+        // Apply hover event based on the active tab
+        $('.nav-link.active').each(function() {
+            let activeTabId = $(this).attr('id');
+            let tableSelector;
+    
+            switch (activeTabId) {
+                case 'employee-tab':
+                    tableSelector = '#employeesList tr';
+                    break;
+                case 'department-tab':
+                    tableSelector = '#departmentList tr';
+                    break;
+                case 'location-tab':
+                    tableSelector = '#locationList tr';
+                    break;
+            }
+    
+            $(tableSelector).hover(function() {
+                let index = $(this).index() + 1; // Index is zero-based
+                let total = $(tableSelector).length;
+                $(".footer").text(`Record: ${index} of ${total}`);
+            }, function() {
+                let total = $(tableSelector).length;
+                $(".footer").text(`Record: 1 of ${total}`);
+            });
+        });
+    };
 
+const bindHoverEvents = (tableSelector) => {
+    $(`${tableSelector} tr`).hover(function() {
+        let index = $(this).index() + 1; // Index is zero-based
+        let total = $(`${tableSelector} tr`).length;
+        $(".footer").text(`Record: ${index} of ${total}`);
+    }, function() {
+        let total = $(`${tableSelector} tr`).length;
+        $(".footer").text(`Record: 1 of ${total}`);
+    });
+};
 
-$('#filterButton').on('click show.bs.modal' , function() {
+$('#filterButton').on('click', function() {
     $('#filterModal').modal('show');
 });
 
@@ -243,6 +295,9 @@ $(document).ready(() => {
             content += `</tr>`;
         }
         tableBody.html(content);
+        // console.log("Employee table updated. Current rows:", tableBody.children().length);
+        updateFooterOnHover();
+        bindHoverEvents("#employeesList")
     };
 
     const populateDepartmentData = (data) => {
@@ -266,6 +321,8 @@ $(document).ready(() => {
         }
 
         tableBody.html(content);
+        updateFooterOnHover();
+        bindHoverEvents('#departmentList');
     };
 
     const populateLocationData = (data) => {
@@ -285,6 +342,9 @@ $(document).ready(() => {
             content += `</tr>`;
         }
         tableBody.html(content);
+        // console.log("Location table updated. Current rows:", tableBody.children().length); 
+        updateFooterOnHover();
+        bindHoverEvents('#locationList')
     };
 
     function addDepartment() {
@@ -432,7 +492,6 @@ $(document).ready(() => {
     });
 
     $(document).on('click show.bs.modal', '.editButtonPersonnel', function(event) {
-        populateDepartmentSelectElements();
         event.preventDefault();
         const personnelId = $(this).data('id');
 
@@ -508,7 +567,6 @@ $(document).ready(() => {
     });
 
     $(document).on('click show.bs.modal', '.editButtonDepartment', function(event) {
-        populateLocationSelectElements();
         event.preventDefault();
         const departmentId = $(this).data('id');
         // console.log("Department ID:", departmentId);
@@ -734,7 +792,7 @@ $(document).ready(() => {
                     showAlertModal('success', 'Department deleted successfully!');
                     getAllDepartmentInfo();
                     searchAll('');
-                    populateDepartmentSelectElements();
+                  	populateDepartmentSelectElements();
                 } else if (response.status.code === "409") {
                     showAlertModal('restrict', 'Cannot delete department as it has assigned personnel.');
                 } else {
@@ -760,7 +818,7 @@ $(document).ready(() => {
                     showAlertModal('success', 'Location deleted successfully!');
                     getAllLocationInfo();
                     searchAll('');
-                    populateLocationSelectElements();
+                  	populateLocationSelectElements();
                 } else if (response.status.code === "409") {
                     showAlertModal('restrict', 'Cannot delete location as it has associated departments.');
                 } else {
@@ -872,6 +930,7 @@ $(document).ready(() => {
                         } else if (activeTabId === "location-tab") {
                             populateLocationData(found);
                         }
+                        updateFooterOnHover();
                     }
                 } else {
                     // console.log('Query failed:', response.status.description);
@@ -889,6 +948,7 @@ $(document).ready(() => {
         searchAll(searchText);
         if (searchText.trim() === "") {
             fetchAllDataForTab(activeTabId);
+            updateFooterOnHover();
         }
     });
     let lastChangedFilter = ''; // This will store the last changed filter
@@ -943,5 +1003,10 @@ function applyFilter(event) {
     getAllDepartmentInfo();
     getAllLocationInfo();
 
+    // Update the footer based on the initially visible table
+    setTimeout(() => {
+        let totalRows = $("#employeesTable tbody tr").length;
+        $(".footer").text(`Record: 1 of ${totalRows}`);
+    }, 500);
 
 });
