@@ -1,5 +1,4 @@
 <?php
-
 $executionStartTime = microtime(true);
 
 include("config.php");
@@ -22,8 +21,8 @@ if (mysqli_connect_errno()) {
     exit;
 }
 
-$departmentFilter = isset($_GET['department']) ? $_GET['department'] : null;
-$locationFilter = isset($_GET['location']) ? $_GET['location'] : null;
+$departmentFilter = isset($_GET['department']) && $_GET['department'] !== 'all' ? $_GET['department'] : null;
+$locationFilter = isset($_GET['location']) && $_GET['location'] !== 'all' ? $_GET['location'] : null;
 $lastChanged = isset($_GET['lastChanged']) ? $_GET['lastChanged'] : null;
 
 $query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID)';
@@ -45,6 +44,7 @@ if ($lastChanged == 'department' && $departmentFilter) {
 if (!empty($whereClauses)) {
     $query .= ' WHERE ' . implode(' AND ', $whereClauses);
 }
+$query .= ' ORDER BY p.lastName, p.firstName';
 
 $stmt = $conn->prepare($query);
 

@@ -44,7 +44,7 @@
 		}
 	
 		// check if values already exist in the database
-		$query = $conn->prepare('SELECT * FROM department WHERE name=? AND locationID=?');
+		$query = $conn->prepare('SELECT name FROM department WHERE name=? AND locationID=?');
 		$query->bind_param("si", $_REQUEST['name'], $_REQUEST['locationID']);
 		$query->execute();
 		$result = $query->get_result();

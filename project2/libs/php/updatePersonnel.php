@@ -47,7 +47,7 @@
         exit;
     }
 
-    $query_check = $conn->prepare('SELECT * FROM personnel WHERE firstName = ? AND lastName = ? AND jobTitle = ? AND email = ? AND departmentID = ? AND id != ?');
+    $query_check = $conn->prepare('SELECT id FROM personnel WHERE firstName = ? AND lastName = ? AND jobTitle = ? AND email = ? AND departmentID = ? AND id != ?');
     $query_check->bind_param("ssssii", $first_name, $last_name, $job_title, $email, $dept_id, $id);
     $query_check->execute();
     $result_check = $query_check->get_result();

@@ -24,24 +24,6 @@
 
     $locationId = $_REQUEST['id'];
 
-    // Check for dependencies
-    $checkQuery = $conn->prepare('SELECT COUNT(*) as count FROM department WHERE locationID = ?');
-    $checkQuery->bind_param("i", $locationId);
-    $checkQuery->execute();
-    $checkResult = $checkQuery->get_result();
-    $row = $checkResult->fetch_assoc();
-
-    if ($row['count'] > 0) {
-        $output['status']['code'] = "409";
-        $output['status']['name'] = "conflict";
-        $output['status']['description'] = "Cannot delete location as it has assigned departments";
-        $output['data'] = [];
-
-        mysqli_close($conn);
-        echo json_encode($output);
-        exit;
-    }
-
     $query = $conn->prepare('DELETE FROM location WHERE id = ?');
     $query->bind_param("i", $locationId);
     $query->execute();

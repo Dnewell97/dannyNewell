@@ -40,7 +40,7 @@ if (empty($_POST['firstName']) || empty($_POST['lastName'])  || empty($_POST['em
     exit;
 }
 
-$query_check = $conn->prepare('SELECT * FROM personnel WHERE firstName = ? AND lastName = ? AND jobTitle = ? AND email = ? AND departmentID = ?');
+$query_check = $conn->prepare('SELECT id, firstName, lastName, jobTitle, email, departmentID FROM personnel WHERE firstName = ? AND lastName = ? AND jobTitle = ? AND email = ? AND departmentID = ?');
 $query_check->bind_param("ssssi", $_POST['firstName'], $_POST['lastName'], $_POST['jobTitle'], $_POST['email'], $_POST['departmentID']);
 $query_check->execute();
 

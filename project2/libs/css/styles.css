@@ -7,11 +7,10 @@ body {
 }
 
 section {
-    height: calc(100vh - 20px);
-    overflow-y: auto;
-    width: 100%;
-  }
-  
+  display: flex;
+  flex-flow: column;
+  height: calc(100vh - 20px);
+}
 
 .tab-content {
   flex: 1;
@@ -24,4 +23,9 @@ tr {
 
 .myBtn {
   width: 70px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
 }
