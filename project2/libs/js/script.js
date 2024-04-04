@@ -437,6 +437,7 @@ function updatePersonnel(updatedData) {
                 $('#editPersonnel').modal('hide');
                 showAlertModal('success', 'Personnel updated successfully!');
                 getAllEmployeeInfo(); // Refresh the employee list
+                $('#searchBarSearch').val('');
             } else {
                 showAlertModal('restrict', 'Failed to update personnel. Please try again.');
             }
@@ -485,6 +486,7 @@ function updateDepartment(departmentData) {
             if (response.status.code === "200") {
                 showAlertModal('success', 'Department updated successfully!');
                 getAllDepartmentInfo();
+                $('#searchBarSearch').val('');
             } else if (response.status.code === "409") {
                 showAlertModal('restrict', 'Department with this name already exists.');
             } else {
@@ -545,6 +547,7 @@ function updateLocation(locationData) {
             if (response.status.code === "200") {
                 showAlertModal('success', 'Location updated successfully!');
                 getAllLocationInfo();
+                $('#searchBarSearch').val('');
             } else {
                 showAlertModal('restrict', 'Failed to update location. Please try again.');
             }
@@ -880,7 +883,7 @@ $('#editLocationForm').submit(function(event) {
             fetchAllDataForTab(activeTabId);
         }
     });
-    let lastChangedFilter = ''; // This will store the last changed filter
+    let lastChangedFilter = ''; 
     const resetSelectElement = (selectElementId) => {
         $(selectElementId).val('all');
     };
@@ -944,7 +947,7 @@ $('#filterModal').on('show.bs.modal', function() {
                 let departments = response.data;
                 let departmentSelect = $('#departmentFilter');
                 departmentSelect.empty(); // Clear existing options
-                departmentSelect.append($('<option>', { value: 'all', text: 'All Departments' }));
+                departmentSelect.append($('<option>', { value: 'all', text: 'All' }));
                 departments.forEach(department => {
                     departmentSelect.append($('<option>', { value: department.id, text: department.name }));
                 });
@@ -965,7 +968,7 @@ $('#filterModal').on('show.bs.modal', function() {
                 let locations = response.data;
                 let locationSelect = $('#locationFilter');
                 locationSelect.empty(); // Clear existing options
-                locationSelect.append($('<option>', { value: 'all', text: 'All Locations' }));
+                locationSelect.append($('<option>', { value: 'all', text: 'All' }));
                 locations.forEach(location => {
                     locationSelect.append($('<option>', { value: location.id, text: location.name }));
                 });
