@@ -129,42 +129,41 @@
          </div>
       </div>
       <!-- Add Department Modal -->
-      <div class="modal fade" id="addDepartment" data-bs-backdrop="false" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal fade" id="addDepartment" data-bs-backdrop="false" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content shadow">
-               <div class="modal-header bg-primary bg-gradient text-white">
-                  <h5 class="modal-title">Add Department</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                  <form id="createDepForm">
-                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="add-department-name" placeholder="Department Name" required>
-                        <label for="add-department-name">Department Name</label>
-                           </div>
-                        <div class="form-floating">
-                           <select class="form-select" id="add-department-location" required>
-                             <!-- Options -->
-                           </select>
-                           <label for="add-department-location">Location</label>
+             <div class="modal-content shadow">
+                 <div class="modal-header bg-primary bg-gradient text-white">
+                     <h5 class="modal-title">Add Department</h5>
+                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                 </div>
+                 <div class="modal-body">
+                     <form id="createDepForm">
+                         <div class="form-floating mb-3">
+                             <input type="text" class="form-control" id="add-department-name" placeholder="Department Name" required>
+                             <label for="add-department-name">Department Name</label>
                          </div>
-                         <div class="modal-footer">
-                           <button type="submit" class="btn btn-outline-primary btn-sm">SAVE</button>
-                           <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">CANCEL</button>
-                        </div>
-                     </div>
-                  </form>
-               </div>
-            </div>
+                         <div class="form-floating mb-3">
+                             <select class="form-select" id="add-department-location" required>
+                                 <!-- Options -->
+                             </select>
+                             <label for="add-department-location">Location</label>
+                         </div>
+                     </form>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="submit" form="createDepForm" class="btn btn-outline-primary btn-sm myBtn">SAVE</button>
+                     <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+                 </div>
+             </div>
          </div>
-      </div>
+     </div>
       <!-- Add Location Modal -->
       <div class="modal fade" id="addLocation" data-bs-backdrop="false" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
          <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content shadow">
                <div class="modal-header bg-primary bg-gradient text-white">
                   <h5 class="modal-title">Add Location</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                </div>
                <div class="modal-body">
                   <form id="createLocForm">
@@ -173,13 +172,13 @@
                         <input type="text" class="form-control" id="add-location-name" placeholder="Location Name" required>
                         <label for="add-location-name">Location Name</label>
                      </div>
+                  </form>
                </div>
                <div class="modal-footer">
-                  <button type="submit" class="btn btn-outline-primary btn-sm">SAVE</button>
-                  <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">CANCEL</button>
+                  <button type="submit" form="createLocForm" class="btn btn-outline-primary btn-sm myBtn">SAVE</button>
+                  <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
                 </div>
             </div>
-         </form>
          </div>
       </div>
 <!-- Delete Personnel Modal -->
@@ -194,12 +193,13 @@
                <form id="deletePersonnelForm">
                    <input type="hidden" class="form-control" id="delete-personnel-id" value="" />
                    <p></p>
-                   <div class="modal-footer">
-                       <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                       <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                   </div>
                </form>
+               
            </div>
+           <div class="modal-footer">
+            <button type="submit" form="deletePersonnelForm" class="btn btn-danger btn-sm myBtn">DELETE</button>
+            <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+        </div>
        </div>
    </div>
 </div>
@@ -216,12 +216,12 @@
                <form id="deleteDepartmentForm">
                    <input type="hidden" class="form-control" id="delete-department-id" value="" />
                    <p></p>
-                   <div class="modal-footer">
-                       <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                       <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                   </div>
                </form>
            </div>
+           <div class="modal-footer">
+            <button type="submit" form="deleteDepartmentForm" class="btn btn-danger btn-sm myBtn">DELETE</button>
+            <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+        </div>
        </div>
    </div>
 </div>
@@ -238,17 +238,16 @@
                <form id="deleteLocationForm">
                    <input type="hidden" class="form-control" id="delete-location-id" value="" />
                    <p></p>
-                   <div class="modal-footer">
-                       <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                       <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                   </div>
                </form>
            </div>
+           <div class="modal-footer">
+            <button type="submit" form="deleteLocationForm" class="btn btn-danger btn-sm myBtn">DELETE</button>
+            <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+        </div>
        </div>
    </div>
 </div>
 
-<!-- Edit Personnel Modal -->
  <!-- Edit Personnel Modal -->
       <div class="modal fade" id="editPersonnel" data-bs-backdrop="false" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editPersonnelLabel" aria-hidden="true">
          <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
@@ -284,7 +283,7 @@
                </div>
                <div class="modal-footer">
                   <button type="submit" form="editPersonnelForm" class="btn btn-outline-primary btn-sm" id="updatePersonnelButton">SUBMIT</button>
-                  <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">CANCEL</button>
+                  <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
                </div>
             </div>
          </div>
@@ -314,8 +313,8 @@
             </form>
          </div>
          <div class="modal-footer">
-            <button type="submit" form="editDepForm" class="btn btn-outline-primary btn-sm">SUBMIT</button>
-            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">CANCEL</button>
+            <button type="submit" form="editDepForm" class="btn btn-outline-primary btn-sm myBtn">SUBMIT</button>
+            <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
          </div>
       </div>
    </div>
@@ -338,8 +337,8 @@
             </form>
          </div>
          <div class="modal-footer">
-            <button type="submit" form="editLocationForm" class="btn btn-outline-primary btn-sm">SUBMIT</button>
-            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">CANCEL</button>
+            <button type="submit" form="editLocationForm" class="btn btn-outline-primary btn-sm myBtn">SUBMIT</button>
+            <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
          </div>
       </div>
    </div>
@@ -372,8 +371,7 @@
                      </form>
                  </div>
                  <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-primary btn-sm myBtn" form="filterForm" id="applyFilterBtn">FILTER</button>
-                  <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+                  <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>
              </div>
          </div>
      </div>
@@ -392,13 +390,13 @@
                   </span>
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">CLOSE</button>
+                  <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">CLOSE</button>
                </div>
             </div>
          </div>
       </div>
-      <div id="cantDeleteDepartmentModal" class="modal fade" tabindex="-1" aria-labelledby="cantDeleteDepartmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div id="cantDeleteDepartmentModal" class="modal fade" tabindex="-1" aria-labelledby="cantDeleteDepartmentModalLabel" aria-hidden="true" data-bs-backdrop="false" >
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content shadow">
                 <div class="modal-header bg-primary bg-gradient text-white">
                     <h5 class="modal-title" id="cantDeleteDepartmentModalLabel">Cannot Remove Department</h5>
@@ -408,24 +406,24 @@
                     You cannot remove the department <span id="cantDeleteDeptName" class="fw-bold"></span> because it has <span id="personnelCount" class="fw-bold"></span> personnel assigned to it.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="cantDeleteLocationModal" class="modal fade" tabindex="-1" aria-labelledby="cantDeleteLocationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div id="cantDeleteLocationModal" class="modal fade" tabindex="-1" aria-labelledby="cantDeleteLocationModalLabel" aria-hidden="true" data-bs-backdrop="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content shadow">
-                <div class="modal-header bg-primary text-white">
+                <div class="modal-header bg-primary bg-gradient text-white">
                     <h5 class="modal-title">Cannot Remove Location</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Cannot delete location <span id="cantDeleteLocName" class="fw-bold"></span> as it has associated departments.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm myBtn" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
