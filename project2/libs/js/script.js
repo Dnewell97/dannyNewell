@@ -586,7 +586,7 @@ $('#editLocationForm').submit(function(event) {
 
     // Open the delete department modal
     $(document).on('click', '.deleteButtonDepartment', function(event) {
-        console.log("Delete department button clicked");
+        // console.log("Delete department button clicked");
         event.preventDefault();
         const departmentId = $(this).data('id');
 
@@ -596,7 +596,7 @@ $('#editLocationForm').submit(function(event) {
             data: { id: departmentId },
             dataType: "json",
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.status.code === "200") {
                     // Show confirmation modal for deletion
                     $('#deleteDepartment .modal-body p').text(`Are you sure you want to delete the ${response.data.departmentName} department?`);
@@ -766,6 +766,7 @@ $('#editLocationForm').submit(function(event) {
         searchAll('');
         $(".table").hide();
         $('#searchBarSearch').val('');
+        resetFilters();
         fetchAllDataForTab(activeTabId);
         currentSearchText = '';
     
@@ -784,8 +785,15 @@ $('#editLocationForm').submit(function(event) {
                 break;
         }
     });
-    
+    const resetFilters = () => {
+        departmentId = 'all';
+        locationId = 'all';
+        lastChanged = '';
+        populateFilters(); // Populate filters after resetting them
+    };
+
     document.getElementById('refreshBtn').addEventListener('click', function() {
+        resetFilters();
         // Get the active tab ID
         var activeTabId = $('.nav-link.active').attr('id');
     
@@ -883,60 +891,60 @@ $('#editLocationForm').submit(function(event) {
             fetchAllDataForTab(activeTabId);
         }
     });
-    let lastChangedFilter = ''; 
+
+    let departmentId = 'all';
+    let locationId = 'all';
+    let lastChanged = ''; // Variable to store the last changed filter
+    
+    // Function to reset a select element to 'all'
     const resetSelectElement = (selectElementId) => {
         $(selectElementId).val('all');
     };
-
+    
+    // Function to apply filters based on the current selections
+    function applyFilter() {
+        $.ajax({
+            url: 'libs/php/filterAll.php',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                department: departmentId,
+                location: locationId,
+                lastChanged: lastChanged
+            },
+            success: function(response) {
+                if (response.status.code === "200") {
+                    populateEmployeeData(response.data.found);
+                } else {
+                    console.error('Query failed:', response.status.description);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error: ' + error);
+            }
+        });
+    }
+    
     // Event listener for department filter change
     $('#departmentFilter').change(function() {
-        lastChangedFilter = 'department';
-        resetSelectElement('#locationFilter'); // Reset location filter
+        departmentId = $(this).val();
+        lastChanged = 'department';
+        resetSelectElement('#locationFilter');
+        locationId = 'all';
+        applyFilter();
     });
-
+    
     // Event listener for location filter change
     $('#locationFilter').change(function() {
-        lastChangedFilter = 'location';
-        resetSelectElement('#departmentFilter'); // Reset department filter
+        locationId = $(this).val();
+        lastChanged = 'location';
+        resetSelectElement('#departmentFilter');
+        departmentId = 'all';
+        applyFilter();
     });
-
-
-function applyFilter(event) {
-    event.preventDefault();
-
-    let departmentId = $('#departmentFilter').val();
-    let locationId = $('#locationFilter').val();
-
-    $.ajax({
-        url: 'libs/php/filterAll.php',
-        type: 'GET',
-        dataType: 'json',
-        data: {
-            department: departmentId,
-            location: locationId,
-            lastChanged: lastChangedFilter
-        },
-        success: function(response) {
-            if (response.status.code === "200") {
-                let filter = response.data.found;
-                populateEmployeeData(filter);
-            } else {
-                console.log('Query failed:', response.status.description);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error: ' + error);
-        }
-    });
-}
-
-// Attach the applyFilter function to the apply filter button
-$('#applyFilterBtn').on('click', applyFilter);
-
-// Event listener for showing the filter modal
-$('#filterModal').on('show.bs.modal', function() {
-    populateDepartmentSelectElements(true); // Include 'All' option
-    populateLocationSelectElements(true); // Include 'All' option
+    
+ // Function to populate filters with the "All" option and selected values
+const populateFilters = () => {
     // Fetch and populate departments
     $.ajax({
         url: 'libs/php/getAllDepartments.php',
@@ -944,13 +952,16 @@ $('#filterModal').on('show.bs.modal', function() {
         dataType: 'json',
         success: function(response) {
             if (response.status.code === "200") {
-                let departments = response.data;
                 let departmentSelect = $('#departmentFilter');
-                departmentSelect.empty(); // Clear existing options
+                departmentSelect.empty();
                 departmentSelect.append($('<option>', { value: 'all', text: 'All' }));
-                departments.forEach(department => {
+                response.data.forEach(department => {
                     departmentSelect.append($('<option>', { value: department.id, text: department.name }));
                 });
+                // Set the selected department after populating
+                departmentSelect.val(departmentId);
+            } else {
+                console.error('Error loading departments:', response.status.description);
             }
         },
         error: function() {
@@ -965,20 +976,32 @@ $('#filterModal').on('show.bs.modal', function() {
         dataType: 'json',
         success: function(response) {
             if (response.status.code === "200") {
-                let locations = response.data;
                 let locationSelect = $('#locationFilter');
-                locationSelect.empty(); // Clear existing options
+                locationSelect.empty();
                 locationSelect.append($('<option>', { value: 'all', text: 'All' }));
-                locations.forEach(location => {
+                response.data.forEach(location => {
                     locationSelect.append($('<option>', { value: location.id, text: location.name }));
                 });
+                // Set the selected location after populating
+                locationSelect.val(locationId);
+            } else {
+                console.error('Error loading locations:', response.status.description);
             }
         },
         error: function() {
             console.error('Error loading locations');
         }
     });
+};
+
+// Event listener for showing the filter modal
+$('#filterModal').on('show.bs.modal', function() {
+    populateFilters();
 });
+
+// Populate filters on page load
+populateFilters();
+
 
     getAllEmployeeInfo();
     getAllDepartmentInfo();
